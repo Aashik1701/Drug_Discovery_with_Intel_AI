@@ -195,4 +195,23 @@ body {
   .service-link:hover {
     background-color: #66b3ff; /* light blue */
   }
+  .service-link button {
+    background-color: #2f4f7f; /* dark blue */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .service-link button:hover {
+    background-color: #66b3ff; /* light blue */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(74, 105, 255, 0.1);
+  }
 }
