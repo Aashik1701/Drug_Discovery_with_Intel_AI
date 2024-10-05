@@ -1,70 +1,86 @@
-# Getting Started with Create React App
+# DrugForge: AI-Driven Drug Discovery Platform
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+DrugForge is an AI-powered platform designed to revolutionize drug discovery by leveraging machine learning models and computational simulations. The platform accelerates the identification of potential drug candidates, predicting key properties and ensuring safety, efficacy, and rapid development.
 
-## Available Scripts
+## Table of Contents:
 
-In the project directory, you can run:
+Features
 
-### `npm start`
+Installation
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Usage
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Contributing
 
-### `npm test`
+License
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Features;
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1]CYP P450 3A4 Inhibition Prediction: Evaluates drug-drug interaction risks by predicting how compounds affect the CYP3A4 enzyme.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2]Half-Life Prediction: Predicts the excretion rate of a compound, informing dosing regimens.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3]hERG Toxicity Prediction: Screens compounds for potential cardiotoxicity by predicting their interaction with hERG potassium ion channels.
 
-### `npm run eject`
+4]Solubility Prediction: Determines the solubility of compounds, which is crucial for bioavailability.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+5]Blood-Brain Barrier (BBB) Permeability Prediction: Assesses whether a compound can cross the BBB, critical for drugs targeting the central nervous system.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+6]Target Activity Prediction: Provides insights into how compounds interact with biological targets like enzymes or receptors.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+7]Molecular Docking: Simulates drug-target interactions, predicting binding affinity and optimizing molecular structures.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+8]Polypharmacology Prediction: Identifies multi-target interactions and repurposing potential of drug candidates.
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Installation;
 
-### Code Splitting
+Clone the Repository:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+bash
+Copy code
+git clone https://github.com/your-username/DrugForge.git
+cd DrugForge
+Create Virtual Environment (Optional):
 
-### Analyzing the Bundle Size
+bash
+Copy code
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+Install Dependencies:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+bash
+Copy code
+pip install -r requirements.txt
+Run the Application:
 
-### Making a Progressive Web App
+bash
+Copy code
+python app.py
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
+### Usage
+Upload Molecular Data: Users can upload molecular structures in SMILES or PDB format.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Select a Feature: Choose from various prediction features like CYP3A4 Inhibition, Solubility, or hERG Toxicity.
 
-### Deployment
+Visualize Results: The results, such as drug-target interaction scores and toxicity predictions, are displayed in an easy-to-understand interface.
+Contributing
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-### `npm run build` fails to minify
+We welcome contributions to DrugForge! To contribute:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Fork the repository.
+
+Create a new branch (git checkout -b feature-branch).
+
+Make changes and commit them (git commit -m 'Add new feature').
+
+Push to your branch (git push origin feature-branch).
+
+Open a pull request.
+
+### License
+This project is licensed under the MIT License. See the LICENSE file for more information.
