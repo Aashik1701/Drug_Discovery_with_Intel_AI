@@ -34,6 +34,7 @@ License
 8]Polypharmacology Prediction: Identifies multi-target interactions and repurposing potential of drug candidates.
 
 
+![WhatsApp Image 2024-10-05 at 10 29 59_83fa4f78](https://github.com/user-attachments/assets/0554fe80-10da-4b63-91f1-e257b9a96885)
 
 ### Installation;
 
