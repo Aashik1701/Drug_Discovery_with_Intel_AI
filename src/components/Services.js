@@ -144,7 +144,11 @@ const Services = () => {
                 ))}
               </div>
               <p className="service-description">{service.description}</p>
-              <Link to={service.link} className="service-link">Learn More</Link>
+              <Link to={service.link} className="service-link">
+              <button>
+                View Service
+              </button>
+              </Link>
             </div>
           ))}
         </div>
