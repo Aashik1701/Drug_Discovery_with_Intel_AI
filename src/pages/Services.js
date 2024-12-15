@@ -1,14 +1,14 @@
 // Services.js
-import React, { useState, useEffect } from 'react';
-import './Services.css';
+import React, { useState, useEffect, useMemo } from 'react';
+
 import { Link } from 'react-router-dom';
 
 const Services = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [filteredServices, setFilteredServices] = useState([]);
-
-  const services = [
+  
+  const services = useMemo(() => [
     {
       name: "BBBP",
       image: "https://res.cloudinary.com/dvude7m7p/image/upload/v1728091897/DrugForge/qcttgx57dieseh2stckd.gif",
@@ -72,7 +72,7 @@ const Services = () => {
       description: "",
       link: "/toxicity"
     }
-  ];
+  ], []);
 
   const filters = [
     "Pharmacokinetics", "Binding", "Interaction", "Toxicity", "Solubility", "HalfLife",
@@ -81,7 +81,7 @@ const Services = () => {
     "DrugSolubility", "DrugMetabolism", "Inhibition", "LiverToxicity", "CellToxicity",
     "BindingScore", "DrugInteractions", "EnzymeInhibition", "ReceptorBinding", "DrugEfficacy", 
     "DrugToxicity"
-  ];
+  ] ;
 
   useEffect(() => {
     const filtered = services.filter(service =>
@@ -95,6 +95,7 @@ const Services = () => {
     setSearchTerm(e.target.value);
   };
 
+
   const handleFilterToggle = (filter) => {
     setSelectedFilters(prevFilters =>
       prevFilters.includes(filter)
@@ -104,60 +105,105 @@ const Services = () => {
   };
 
   return (
-    <div className="services">
-      <h1>List of available bioinformatic tools and services.</h1>
-      
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Search by service name or keyword (i.e: alphafold, docking, esm)"
-          value={searchTerm}
-          onChange={handleSearchChange}
-          className="search-input"
-        />
-      </div>
-
-      <div className="filters">
-        <h3>Filters</h3>
-        <div className="filter-buttons">
-          {filters.map((filter) => (
-            <button
-              key={filter}
-              className={`filter-button ${selectedFilters.includes(filter) ? 'active' : ''}`}
-              onClick={() => handleFilterToggle(filter)}
-            >
-              {filter}
-            </button>
-          ))}
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white p-8">
+      <div className="max-w-7xl mx-auto"></div>
+        {/* Header with animation */}
+        <h1 className="text-4xl font-bold mb-12 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600 animate-pulse">
+          DrugForge Services
+        </h1>
+        
+        {/* Search Bar with floating effect */}
+        <div className="mb-10 transform hover:scale-[1.02] transition-transform duration-300">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search services..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="w-full p-4 rounded-xl bg-gray-800/50 backdrop-blur-sm text-white 
+                       border border-gray-700 focus:border-blue-500 focus:ring-2 
+                       focus:ring-blue-500/50 transition-all duration-300"
+            />
+            <span className="absolute right-4 top-4 text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </span>
+          </div>
         </div>
-      </div>
 
-      <div className="service-list">
-        <div className="service-grid">
-          {filteredServices.map((service) => (
-            <div key={service.name} className="service-item">
-              <img src={service.image} alt={service.name} className="service-image" />
-              <h4 className="service-name">{service.name}</h4>
-              <div className="service-keywords">
-                {service.keywords.map((keyword, index) => (
-                  <span key={index} className="keyword">{keyword}</span>
-                ))}
-              </div>
-              <p className="service-description">{service.description}</p>
-              <Link to={service.link} className="service-link">
-              <button>
-                View Service
+        {/* Filters with smooth animation */}
+        <div className="mb-10">
+          <div className="flex flex-wrap gap-2 justify-center">
+            {filters.map((filter) => (
+              <button
+                key={filter}
+                onClick={() => handleFilterToggle(filter)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 
+                  ${selectedFilters.includes(filter)
+                    ? 'bg-blue-600 shadow-lg shadow-blue-500/50 scale-105'
+                    : 'bg-gray-800/50 hover:bg-gray-700'}`}
+              >
+                {filter}
               </button>
-              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Service Grid with hover effects */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {filteredServices.map((service) => (
+            <div 
+              key={service.name} 
+              className="group bg-gray-800/30 backdrop-blur-sm rounded-xl overflow-hidden 
+                       hover:shadow-xl hover:shadow-blue-500/20 transition-all duration-500 
+                       transform hover:scale-[1.02]"
+            >
+              <div className="relative h-56 overflow-hidden">
+                <img 
+                  src={service.image} 
+                  alt={service.name} 
+                  className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500" 
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent" />
+              </div>
+              
+              <div className="p-6">
+                <h3 className="text-2xl font-bold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+                  {service.name}
+                </h3>
+                <p className="text-gray-300 text-sm mb-4 line-clamp-2">{service.description}</p>
+                <div className="flex flex-wrap gap-2 mb-6">
+                  {service.keywords.slice(0, 3).map((keyword, index) => (
+                    <span key={index} className="text-xs bg-blue-600/20 border border-blue-500/30 
+                                               px-3 py-1 rounded-full text-blue-400">
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
+                <Link 
+                  to={service.link}
+                  className="block w-full text-center bg-gradient-to-r from-blue-600 to-purple-600 
+                           py-3 rounded-lg font-medium transition-all duration-300
+                           hover:opacity-90 hover:shadow-lg hover:shadow-blue-500/30"
+                >
+                  Explore Service →
+                </Link>
+              </div>
             </div>
           ))}
         </div>
+
         {filteredServices.length === 0 && (
-          <p className="no-results">No services found matching your criteria.</p>
+          <div className="text-center text-gray-400 mt-12 animate-fade-in">
+            <svg className="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M12 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-xl">No services found matching your criteria</p>
+          </div>
         )}
       </div>
-    </div>
   );
 };
-
+  
 export default Services;

@@ -22,7 +22,7 @@ import BindingScore from './components/BindingScore.js';
 import ACE2 from './components/ACE2.js';
 import Toxicity from './components/Toxicity.js';
 import Chatbot from './components/Chatbot.js';
-
+import './index.css';
 const App = () => (
   <div>
     <Header />
