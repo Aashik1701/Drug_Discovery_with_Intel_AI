@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 const Header = () => {
   const location = useLocation();
-  const [isMenuHovered, setIsMenuHovered] = useState(false);
+  const [setIsMenuHovered] = useState(false);
 
   return (
     <header className="fixed top-0 left-0 w-full bg-gray-900/95 backdrop-blur-sm shadow-lg shadow-blue-500/10 transition-all duration-300 ease-in-out z-[1000]">

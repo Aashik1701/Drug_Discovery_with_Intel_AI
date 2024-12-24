@@ -1,13 +1,14 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 const Hero = () => {
-  const actions = [
+
+  const actions = useMemo(() => [
     "predict protein stability",
     "analyze protein stability",
     "evaluate drug interactions",
     "simulate molecular dynamics",
-  ];
+  ], []);
 
   const [currentAction, setCurrentAction] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
