@@ -1,33 +1,28 @@
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from '../hooks';
-import { Loader2 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { LoadingFallback } from '../App.jsx';
 
 /**
  * Component to protect routes that require authentication
  */
-const ProtectedRoute = ({ redirectPath = '/signin' }) => {
-  const { isLoggedIn, isLoading } = useAuth();
+const ProtectedRoute = ({ redirectPath = '/signin', children }) => {
+  const { isAuthenticated, loading } = useAuth();
   const location = useLocation();
 
   // Show loading spinner while checking auth status
-  if (isLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <Loader2 className="h-10 w-10 animate-spin text-blue-500" />
-        <span className="ml-2 text-lg font-medium text-gray-700">Checking authentication...</span>
-      </div>
-    );
+  if (loading) {
+    return <LoadingFallback />;
   }
 
-  // If not logged in, redirect to login page
-  if (!isLoggedIn) {
+  // If not authenticated, redirect to login page
+  if (!isAuthenticated) {
     // Save the current location to redirect after login
     return <Navigate to={redirectPath} state={{ from: location }} replace />;
   }
 
-  // If logged in, render the child route elements
-  return <Outlet />;
+  // If authenticated, render children or outlet
+  return children || <Outlet />;
 };
 
 export default ProtectedRoute;
