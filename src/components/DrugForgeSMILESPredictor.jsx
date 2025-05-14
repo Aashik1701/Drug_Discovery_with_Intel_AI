@@ -1,98 +1,5 @@
 import React, { useState } from "react";
 
-const styles = {
-  container: {
-    maxWidth: '600px',
-    margin: '2rem auto',
-    padding: '2rem',
-    backgroundColor: '#f8f9fa',
-    borderRadius: '10px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-  },
-  heading: {
-    color: '#2c3e50',
-    marginBottom: '1.5rem',
-    fontSize: '2.5rem',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  label: {
-    fontSize: '1.1rem',
-    marginBottom: '0.5rem',
-    color: '#34495e',
-  },
-  input: {
-    width: '100%',
-    padding: '0.75rem',
-    marginBottom: '1rem',
-    border: '2px solid #bdc3c7',
-    borderRadius: '5px',
-    fontSize: '1rem',
-    transition: 'border-color 0.3s ease',
-  },
-  button: {
-    backgroundColor: '#3498db',
-    color: 'white',
-    border: 'none',
-    padding: '0.75rem 1.5rem',
-    fontSize: '1rem',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    transition: 'background-color 0.3s ease, transform 0.1s ease',
-  },
-  buttonHover: {
-    backgroundColor: '#2980b9',
-  },
-  buttonDisabled: {
-    backgroundColor: '#95a5a6',
-    cursor: 'not-allowed',
-  },
-  predictionResult: {
-    marginTop: '1.5rem',
-    padding: '1rem',
-    backgroundColor: '#ecf0f1',
-    borderRadius: '5px',
-    fontSize: '1.1rem',
-    color: '#2c3e50',
-    transition: 'opacity 0.3s ease',
-  },
-  infoTooltip: {
-    position: 'relative',
-    display: 'inline-block',
-    marginLeft: '0.5rem',
-    cursor: 'pointer',
-  },
-  tooltipText: {
-    visibility: 'hidden',
-    width: '200px',
-    backgroundColor: '#34495e',
-    color: '#fff',
-    textAlign: 'center',
-    borderRadius: '6px',
-    padding: '0.5rem',
-    position: 'absolute',
-    zIndex: 1,
-    bottom: '125%',
-    left: '50%',
-    marginLeft: '-100px',
-    opacity: 0,
-    transition: 'opacity 0.3s',
-  },
-  spinner: {
-    display: 'inline-block',
-    width: '2rem',
-    height: '2rem',
-    verticalAlign: 'text-bottom',
-    border: '0.25em solid currentColor',
-    borderRightColor: 'transparent',
-    borderRadius: '50%',
-    animation: 'spin 0.75s linear infinite',
-  },
-};
-
 const SMILESPredictor = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ smiles: "" });
@@ -141,64 +48,81 @@ const SMILESPredictor = () => {
   };
 
   return (
-    <div style={styles.container}>
-      <h1 style={styles.heading}>Solubility Prediction</h1>
-      <form style={styles.form}>
-        <div>
-          <label style={styles.label}>
-            <b>Enter SMILES String:</b>
-            <span style={styles.infoTooltip}>
-              ℹ️
-              <span style={styles.tooltipText}>
-                SMILES (Simplified Molecular Input Line Entry System) is a specification for describing the structure of chemical molecules using short ASCII strings.
-              </span>
-            </span>
-          </label>
-          <br />
-          <input
-            type="text"
-            style={styles.input}
-            id="smiles"
-            name="smiles"
-            value={formData.smiles}
-            onChange={handleChange}
-            placeholder="Enter SMILES string"
-          />
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 flex justify-center items-center p-5">
+      <div className="max-w-md w-full bg-white rounded-xl shadow-lg border border-gray-100 p-8">
+        <h1 className="text-2xl font-bold text-blue-600 mb-6 text-center">Solubility Prediction</h1>
+        
+        <div className="mb-6 bg-blue-50 p-4 rounded-md border border-blue-100">
+          <p className="text-gray-700 text-sm">
+            Predict the solubility of chemical compounds using SMILES notation.
+            Enter a valid SMILES string below to get a prediction.
+          </p>
         </div>
-        <div>
-          <button
-            style={{
-              ...styles.button,
-              ...(isHovered && !isLoading ? styles.buttonHover : {}),
-              ...(isLoading ? styles.buttonDisabled : {}),
-            }}
-            disabled={isLoading}
-            onClick={!isLoading ? handlePredictClick : null}
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-          >
-            {isLoading ? "Predicting..." : "Predict Solubility"}
-          </button>
-        </div>
-      </form>
-      <br />
-      {isLoading && (
-        <div style={styles.spinner} />
-      )}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <div style={{
-        ...styles.predictionResult,
-        opacity: showSpan ? 1 : 0,
-      }}>
+        
+        <form className="space-y-6">
+          <div>
+            <label className="block mb-2 text-gray-700 font-medium">
+              Enter SMILES String:
+              <div className="relative inline-block ml-1">
+                <span className="cursor-pointer text-blue-500 hover:text-blue-700" onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+                  ℹ️
+                </span>
+                {isHovered && (
+                  <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 p-2 bg-gray-800 text-white text-xs rounded shadow-lg z-10">
+                    SMILES (Simplified Molecular Input Line Entry System) is a specification for describing the structure of chemical molecules using short ASCII strings.
+                    <div className="absolute left-1/2 transform -translate-x-1/2 top-full w-2 h-2 bg-gray-800 rotate-45"></div>
+                  </div>
+                )}
+              </div>
+            </label>
+            <input
+              type="text"
+              id="smiles"
+              name="smiles"
+              value={formData.smiles}
+              onChange={handleChange}
+              placeholder="e.g., CC(=O)OC1=CC=CC=C1C(=O)O"
+              className="w-full px-4 py-2 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
+            />
+          </div>
+          <div className="flex justify-center pt-2">
+            <button
+              disabled={isLoading}
+              onClick={!isLoading ? handlePredictClick : null}
+              className={`px-6 py-3 font-medium rounded-md transition-colors ${
+                isLoading 
+                  ? "bg-gray-400 cursor-not-allowed text-white"
+                  : "bg-blue-600 hover:bg-blue-700 text-white"
+              }`}
+            >
+              {isLoading ? "Predicting..." : "Predict Solubility"}
+            </button>
+          </div>
+        </form>
+        
+        {isLoading && (
+          <div className="flex justify-center mt-4">
+            <div className="w-8 h-8 border-4 border-blue-300 border-t-blue-600 rounded-full animate-spin"></div>
+          </div>
+        )}
+        
+        {error && (
+          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-md">
+            <p className="text-red-600">{error}</p>
+          </div>
+        )}
+        
+        <div className={`mt-6 p-4 bg-gray-50 border border-gray-200 rounded-md transition-opacity duration-300 ${showSpan ? 'opacity-100' : 'opacity-0'}`}>
         {result ? (
           <>
-            <h4>Prediction Result:</h4>
-            <p>The Predicted Solubility Value is <strong>{result}</strong></p>
+            <h4 className="text-lg font-semibold text-gray-800 mb-2">Prediction Result:</h4>
+            <p className="text-gray-700">The Predicted Solubility Value is <span className="font-bold text-blue-600">{result}</span></p>
           </>
         ) : (
-          <p>Please enter a valid SMILES string and click "Predict Solubility"</p>
+          <p className="text-gray-600">Please enter a valid SMILES string and click "Predict Solubility"</p>
         )}
       </div>
+    </div>
     </div>
   );
 };
