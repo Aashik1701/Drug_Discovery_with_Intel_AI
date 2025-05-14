@@ -1,121 +1,7 @@
 import React, { useState } from "react";
 import { XCircle } from "lucide-react";
 
-const containerStyle = {
-  minHeight: "100vh",
-  backgroundColor: "linear-gradient(to bottom right, #87CEEB, #6495ED)",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  padding: "20px",
-};
-
-const cardStyle = {
-  backgroundColor: "#FFFFFF",
-  borderRadius: "10px",
-  boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
-  padding: "20px",
-  maxWidth: "500px",
-  width: "100%",
-};
-
-const titleStyle = {
-  fontSize: "24px",
-  fontWeight: "bold",
-  color: "#2196F3",
-  marginBottom: "20px",
-  textAlign: "center",
-};
-
-const formStyle = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "20px",
-};
-
-const labelStyle = {
-  fontSize: "16px",
-  fontWeight: "bold",
-  color: "#333333",
-  marginBottom: "10px",
-};
-
-const inputStyle = {
-  width: "100%",
-  padding: "10px",
-  fontSize: "16px",
-  border: "1px solid #CCCCCC",
-  borderRadius: "5px",
-  outline: "none",
-  transition: "all 0.2s ease-in-out",
-};
-
-
-const buttonStyle = {
-  width: "100%",
-  padding: "10px",
-  fontSize: "16px",
-  fontWeight: "bold",
-  color: "#FFFFFF",
-  backgroundColor: "#2196F3",
-  border: "none",
-  borderRadius: "5px",
-  cursor: "pointer",
-  transition: "all 0.2s ease-in-out",
-};
-
-const buttonHoverStyle = {
-  backgroundColor: "#1A76D2",
-};
-
-const buttonDisabledStyle = {
-  backgroundColor: "#CCCCCC",
-  cursor: "not-allowed",
-};
-
-const errorStyle = {
-  marginTop: "20px",
-  padding: "20px",
-  backgroundColor: "#FFC080",
-  border: "1px solid #FF9900",
-  borderRadius: "5px",
-  display: "flex",
-  alignItems: "center",
-};
-
-const errorIconStyle = {
-  height: "20px",
-  width: "20px",
-  marginRight: "10px",
-  color: "#FF9900",
-};
-
-const errorTextStyle = {
-  fontSize: "16px",
-  color: "#FF9900",
-};
-
-const resultStyle = {
-  marginTop: "20px",
-  padding: "20px",
-  backgroundColor: "#F7F7F7",
-  border: "1px solid #CCCCCC",
-  borderRadius: "5px",
-};
-
-const resultTitleStyle = {
-  fontSize: "18px",
-  fontWeight: "bold",
-  color: "#333333",
-  marginBottom: "10px",
-};
-
-const resultTextStyle = {
-  fontSize: "16px",
-  color: "#666666",
-};
-
-const BBBPPredictor = () => {
+const BBBP = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ smiles: "" });
   const [prediction, setPrediction] = useState({
@@ -164,12 +50,19 @@ const BBBPPredictor = () => {
   };
 
   return (
-    <div style={containerStyle}>
-      <div style={cardStyle}>
- <h1 style={titleStyle}>BBBP Prediction</h1>
-        <form onSubmit={handlePredictClick} style={formStyle}>
+    <div className="flex items-center justify-center min-h-screen p-5 bg-gradient-to-br from-blue-200 to-blue-500">
+      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
+        <h1 className="mb-6 text-2xl font-bold text-center text-blue-500">Blood-Brain Barrier Penetration</h1>
+        
+        <div className="p-4 mb-6 border border-blue-100 rounded-md bg-blue-50">
+          <p className="text-sm text-gray-700">
+            The Blood-Brain Barrier (BBB) is a highly selective membrane that separates the circulating blood from the brain and extracellular fluid. This tool predicts whether a compound can penetrate this barrier, which is crucial for developing drugs that target the central nervous system.
+          </p>
+        </div>
+        
+        <form onSubmit={handlePredictClick} className="flex flex-col gap-5">
           <div>
-            <label style={labelStyle} htmlFor="smiles">
+            <label className="block mb-2 font-semibold text-gray-800" htmlFor="smiles">
               Enter SMILES String:
             </label>
             <input
@@ -179,56 +72,57 @@ const BBBPPredictor = () => {
               value={formData.smiles}
               onChange={handleChange}
               placeholder="e.g., CC(=O)OC1=CC=CC=C1C(=O)O"
-              style={inputStyle}
+              className="w-full px-4 py-2 text-gray-700 transition border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
+          
           <button
             type="submit"
             disabled={isLoading}
-            style={{
-              ...buttonStyle,
-              ...(isLoading ? buttonDisabledStyle : buttonHoverStyle),
-            }}
+            className={`w-full py-2 text-white font-semibold rounded-md transition-colors ${
+              isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+            }`}
           >
-            {isLoading ? "Predicting..." : "Predict BBBP"}
+            {isLoading ? "Predicting..." : "Predict BBB Penetration"}
           </button>
         </form>
 
         {error && (
-          <div style={errorStyle}>
-            <XCircle style={errorIconStyle} />
+          <div className="flex items-start p-4 mt-6 bg-orange-100 border border-orange-400 rounded-md">
+            <XCircle className="h-5 w-5 text-orange-500 mr-3 mt-0.5 flex-shrink-0" />
             <div>
-              <h3 style={errorTextStyle}>Error</h3>
-              <p style={errorTextStyle}>{error}</p>
+              <h3 className="font-semibold text-orange-500">Error</h3>
+              <p className="text-orange-700">{error}</p>
             </div>
           </div>
         )}
+        
         {showResult && (
-  <div style={resultStyle}>
-    <h2 style={resultTitleStyle}>Prediction Result:</h2>
-    <p style={resultTextStyle}>
-      <span style={{ fontWeight: "bold" }}>Predicted Class:</span>{" "}
-      {prediction.predictedClass}
-    </p>
-    <p style={resultTextStyle}>
-      <span style={{ fontWeight: "bold" }}>
-        Probability for Class 1:
-      </span>{" "}
-      {prediction.predictedProbability !== null
-        ? prediction.predictedProbability.toFixed(4)
-        : "N/A"}
-    </p>
-    <p style={resultTextStyle}>
-      {prediction.predictedClass === 1
-        ? "It will penetrate the Blood-Brain Barrier."
-        : "It will not penetrate the Blood-Brain Barrier."}
-    </p>
-  </div>
-)}
+          <div className="p-4 mt-6 border border-gray-200 rounded-md bg-gray-50">
+            <h2 className="mb-2 text-lg font-semibold text-gray-800">Prediction Result:</h2>
+            <div className="space-y-2">
+              <p className="text-gray-700">
+                <span className="font-semibold">Predicted Class:</span>{" "}
+                {prediction.predictedClass}
+              </p>
+              <p className="text-gray-700">
+                <span className="font-semibold">Probability:</span>{" "}
+                {prediction.predictedProbability !== null
+                  ? prediction.predictedProbability.toFixed(4)
+                  : "N/A"}
+              </p>
+              <p className={`mt-2 p-2 ${prediction.predictedClass === 1 ? "bg-green-50 border-l-4 border-green-500" : "bg-red-50 border-l-4 border-red-500"} rounded`}>
+                {prediction.predictedClass === 1
+                  ? "This compound is likely to penetrate the Blood-Brain Barrier."
+                  : "This compound is unlikely to penetrate the Blood-Brain Barrier."}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default BBBPPredictor;
+export default BBBP;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { XCircle } from "lucide-react";
 
-const ACE2 = () => {
+const HEPG2 = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ smiles: "" });
   const [prediction, setPrediction] = useState({
@@ -43,7 +43,7 @@ const ACE2 = () => {
       setShowResult(true);
     } catch (error) {
       console.error("Error:", error);
-      setError(" An error occurred while fetching the prediction. Please try again.");
+      setError("An error occurred while fetching the prediction. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -52,15 +52,17 @@ const ACE2 = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-200 to-blue-500 flex justify-center items-center p-5">
       <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
-        <h1 className="text-2xl font-bold text-blue-500 mb-4 text-center">ACE2 Binding Prediction</h1>
-        <h2 className="text-lg font-semibold text-gray-800 mb-2 text-center">Angiotensin-Converting Enzyme 2 (ACE2)</h2>
+        <h1 className="text-2xl font-bold text-blue-500 mb-4 text-center">HEPG2 Toxicity Prediction</h1>
+        <h2 className="text-lg font-semibold text-gray-800 mb-2 text-center">Human Hepatocellular Carcinoma</h2>
         
-        <p className="text-gray-600 mb-4 text-center">
-          ACE2 is a protein that plays a crucial role in the regulation of blood pressure and electrolyte balance. It is also the primary receptor for the SARS-CoV-2 virus, which causes COVID-19.
-        </p>
-        <p className="text-gray-600 mb-6 text-center">
-          The prediction model uses machine learning algorithms to predict the likelihood of a compound binding to ACE2, which is important for drug discovery related to COVID-19 treatments.
-        </p>
+        <div className="mb-6 bg-blue-50 p-4 rounded-md border border-blue-100">
+          <p className="text-gray-700 text-sm mb-2">
+            HEPG2 cells are a human liver cancer cell line used to test compounds for hepatotoxicity (liver toxicity). This is a critical safety assessment in drug development.
+          </p>
+          <p className="text-gray-700 text-sm">
+            This tool predicts whether a compound will exhibit toxicity to HEPG2 cells, helping to identify potential liver-toxic compounds early in drug discovery.
+          </p>
+        </div>
         
         <form onSubmit={handlePredictClick} className="flex flex-col gap-5">
           <div>
@@ -86,7 +88,7 @@ const ACE2 = () => {
               isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
             }`}
           >
-            {isLoading ? "Predicting..." : "Predict ACE2 Binding"}
+            {isLoading ? "Predicting..." : "Predict HEPG2 Toxicity"}
           </button>
         </form>
 
@@ -114,10 +116,10 @@ const ACE2 = () => {
                   ? prediction.predictedProbability.toFixed(4)
                   : "N/A"}
               </p>
-              <p className="text-gray-700 mt-2 p-2 bg-blue-50 border-l-4 border-blue-500 rounded">
+              <p className={`mt-2 p-2 ${prediction.predictedClass === 1 ? "bg-red-50 border-l-4 border-red-500" : "bg-green-50 border-l-4 border-green-500"} rounded`}>
                 {prediction.predictedClass === 1
-                  ? "This compound is likely to bind to ACE2."
-                  : "This compound is unlikely to bind to ACE2."}
+                  ? "This compound is predicted to be toxic to HEPG2 cells, suggesting potential liver toxicity concerns."
+                  : "This compound is predicted to be non-toxic to HEPG2 cells, suggesting a favorable liver safety profile."}
               </p>
             </div>
           </div>
@@ -127,4 +129,4 @@ const ACE2 = () => {
   );
 };
 
-export default ACE2;
+export default HEPG2;

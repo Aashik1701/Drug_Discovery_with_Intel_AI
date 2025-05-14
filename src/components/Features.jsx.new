@@ -1,0 +1,91 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+const features = [
+  {
+    title: 'Solubility Prediction',
+    description: 'Predict the solubility of chemical compounds.',
+    imageUrl: '/Images/features/solubility-prediction.jpg',
+    route: '/predictor',
+  },
+  {
+    title: 'Blood-Brain Barrier Permeability',
+    description: 'Evaluate the permeability of compounds across the blood-brain barrier.',
+    imageUrl: '/Images/features/bbb-permeability.jpg',
+    route: '/bbb-permeability',
+  },
+  {
+    title: 'Target Identification and Activity Prediction',
+    description: 'Identify potential drug targets and predict their activity.',
+    imageUrl: '/Images/features/target-identification.jpg',
+    route: '/target-identification',
+  },
+  {
+    title: 'Molecular Docking',
+    description: 'Analyze the interaction between molecules and targets.',
+    imageUrl: '/Images/features/molecular-docking.jpg',
+    route: '/molecular-docking',
+  },
+];
+
+const Features = () => {
+  return (
+    <div className="py-12 bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="lg:text-center">
+          <h2 className="text-base text-blue-600 font-semibold tracking-wide uppercase">Capabilities</h2>
+          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+            Our Features
+          </p>
+          <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
+            Advanced drug discovery tools powered by artificial intelligence and machine learning
+          </p>
+        </div>
+
+        <div className="mt-10">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {features.map((feature, index) => (
+              <Link 
+                key={index} 
+                to={feature.route} 
+                className="group relative bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-blue-300"
+              >
+                <div className="aspect-w-3 aspect-h-2 bg-gray-200">
+                  <img 
+                    src={feature.imageUrl} 
+                    alt={feature.title} 
+                    className="w-full h-48 object-cover object-center transform transition-transform duration-300 group-hover:scale-105"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="text-lg font-medium text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
+                    {feature.title}
+                  </h3>
+                  <p className="mt-2 text-sm text-gray-500">
+                    {feature.description}
+                  </p>
+                  <div className="mt-4 flex items-center text-blue-600">
+                    <span className="text-sm font-medium">Learn more</span>
+                    <svg 
+                      className="ml-1 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1" 
+                      fill="currentColor" 
+                      viewBox="0 0 20 20"
+                    >
+                      <path 
+                        fillRule="evenodd" 
+                        d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" 
+                        clipRule="evenodd" 
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Features;

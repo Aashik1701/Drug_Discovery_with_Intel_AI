@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { XCircle } from "lucide-react";
 
-const ACE2 = () => {
+const HalfLife = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ smiles: "" });
   const [prediction, setPrediction] = useState({
-    predictedClass: null,
-    predictedProbability: null,
+    halfLife: null,
+    confidence: null,
   });
   const [showResult, setShowResult] = useState(false);
   const [error, setError] = useState(null);
@@ -23,7 +23,7 @@ const ACE2 = () => {
     setShowResult(false);
 
     try {
-      const response = await fetch("http://localhost:5001/predict", {
+      const response = await fetch("http://localhost:5001/predict/half-life", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,30 +37,42 @@ const ACE2 = () => {
 
       const data = await response.json();
       setPrediction({
-        predictedClass: data["Predicted Class"],
-        predictedProbability: data["Predicted Probability for Class 1"],
+        halfLife: data.halfLife,
+        confidence: data.confidence,
       });
       setShowResult(true);
     } catch (error) {
       console.error("Error:", error);
-      setError(" An error occurred while fetching the prediction. Please try again.");
+      setError("An error occurred while fetching the prediction. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Helper function to categorize half-life
+  const categorizeHalfLife = (hours) => {
+    if (hours < 1) return { category: "Very Short", color: "text-red-600" };
+    if (hours < 4) return { category: "Short", color: "text-orange-500" };
+    if (hours < 12) return { category: "Medium", color: "text-yellow-600" };
+    if (hours < 24) return { category: "Long", color: "text-green-600" };
+    return { category: "Very Long", color: "text-blue-600" };
+  };
+
+  const halfLifeCategory = prediction.halfLife ? categorizeHalfLife(prediction.halfLife) : null;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-200 to-blue-500 flex justify-center items-center p-5">
       <div className="bg-white rounded-lg shadow-lg p-6 max-w-md w-full">
-        <h1 className="text-2xl font-bold text-blue-500 mb-4 text-center">ACE2 Binding Prediction</h1>
-        <h2 className="text-lg font-semibold text-gray-800 mb-2 text-center">Angiotensin-Converting Enzyme 2 (ACE2)</h2>
+        <h1 className="text-2xl font-bold text-blue-500 mb-4 text-center">Drug Half-Life Prediction</h1>
         
-        <p className="text-gray-600 mb-4 text-center">
-          ACE2 is a protein that plays a crucial role in the regulation of blood pressure and electrolyte balance. It is also the primary receptor for the SARS-CoV-2 virus, which causes COVID-19.
-        </p>
-        <p className="text-gray-600 mb-6 text-center">
-          The prediction model uses machine learning algorithms to predict the likelihood of a compound binding to ACE2, which is important for drug discovery related to COVID-19 treatments.
-        </p>
+        <div className="mb-6 bg-blue-50 p-4 rounded-md border border-blue-100">
+          <p className="text-gray-700 text-sm mb-2">
+            Half-life is the time required for the concentration of a drug to reduce to half of its starting value in the body. It's a critical pharmacokinetic parameter in drug development.
+          </p>
+          <p className="text-gray-700 text-sm">
+            This tool predicts the half-life of a compound based on its molecular structure, helping researchers understand how long a drug might remain active in the body.
+          </p>
+        </div>
         
         <form onSubmit={handlePredictClick} className="flex flex-col gap-5">
           <div>
@@ -86,7 +98,7 @@ const ACE2 = () => {
               isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
             }`}
           >
-            {isLoading ? "Predicting..." : "Predict ACE2 Binding"}
+            {isLoading ? "Predicting..." : "Predict Half-Life"}
           </button>
         </form>
 
@@ -105,20 +117,36 @@ const ACE2 = () => {
             <h2 className="text-lg font-semibold text-gray-800 mb-2">Prediction Result:</h2>
             <div className="space-y-2">
               <p className="text-gray-700">
-                <span className="font-semibold">Predicted Class:</span>{" "}
-                {prediction.predictedClass}
-              </p>
-              <p className="text-gray-700">
-                <span className="font-semibold">Probability:</span>{" "}
-                {prediction.predictedProbability !== null
-                  ? prediction.predictedProbability.toFixed(4)
+                <span className="font-semibold">Predicted Half-Life:</span>{" "}
+                {prediction.halfLife !== null
+                  ? `${prediction.halfLife.toFixed(2)} hours`
                   : "N/A"}
               </p>
-              <p className="text-gray-700 mt-2 p-2 bg-blue-50 border-l-4 border-blue-500 rounded">
-                {prediction.predictedClass === 1
-                  ? "This compound is likely to bind to ACE2."
-                  : "This compound is unlikely to bind to ACE2."}
+              <p className="text-gray-700">
+                <span className="font-semibold">Confidence:</span>{" "}
+                {prediction.confidence !== null
+                  ? `${(prediction.confidence * 100).toFixed(1)}%`
+                  : "N/A"}
               </p>
+              
+              {halfLifeCategory && (
+                <div className="mt-4 p-3 bg-gray-100 rounded-md">
+                  <p className="font-medium">Half-life category: <span className={`${halfLifeCategory.color} font-bold`}>{halfLifeCategory.category}</span></p>
+                  <div className="mt-2 h-2 bg-gray-300 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500"
+                      style={{ width: `${Math.min(100, (prediction.halfLife / 24) * 100)}%` }}
+                    ></div>
+                  </div>
+                  <div className="flex justify-between text-xs mt-1">
+                    <span>0h</span>
+                    <span>6h</span>
+                    <span>12h</span>
+                    <span>18h</span>
+                    <span>24h+</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -127,4 +155,4 @@ const ACE2 = () => {
   );
 };
 
-export default ACE2;
+export default HalfLife;
