@@ -1,14 +1,14 @@
 // Header.jsx
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ThemeToggle } from './ThemeProvider';
+import { ThemeToggle } from './ThemeProvider.jsx';
 
 const Header = () => {
   const location = useLocation();
   const [isMenuHovered, setIsMenuHovered] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 w-full bg-gray-900/95 backdrop-blur-sm shadow-lg shadow-blue-500/10 transition-all duration-300 ease-in-out z-[1000]">
+    <header className="fixed top-0 left-0 w-full bg-white/90 dark:bg-gray-900/95 backdrop-blur-sm shadow-md dark:shadow-lg dark:shadow-blue-500/10 transition-all duration-300 ease-in-out z-[1000]">
       <div className="flex items-center justify-between px-8 py-4 mx-auto max-w-7xl">
         {/* Logo */}
         <div className="transition-transform duration-300 transform hover:scale-105">
@@ -29,15 +29,16 @@ const Header = () => {
               { path: '/blog', label: 'Blogs' },
               { path: '/features', label: 'Features' },
               { path: '/contact', label: 'Contact' },
-              { path: '/pricing', label: 'Pricing' }
+              { path: '/pricing', label: 'Pricing' },
+              { path: '/theme-demo', label: 'Theme Demo' }
             ].map((item) => (
               <li key={item.path}>
                 <Link
                   to={item.path}
                   className={`relative px-3 py-2 text-sm font-medium transition-all duration-300 
                     ${location.pathname === item.path 
-                      ? 'text-blue-400' 
-                      : 'text-gray-300 hover:text-white'
+                      ? 'text-blue-400 dark:text-blue-300' 
+                      : 'text-gray-700 dark:text-gray-300 hover:text-blue-500 dark:hover:text-white'
                     }`}
                 >
                   {item.label}

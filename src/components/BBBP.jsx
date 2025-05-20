@@ -50,19 +50,19 @@ const BBBP = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-5 bg-gradient-to-br from-blue-200 to-blue-500">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
-        <h1 className="mb-6 text-2xl font-bold text-center text-blue-500">Blood-Brain Barrier Penetration</h1>
+    <div className="flex items-center justify-center min-h-screen p-5 bg-gradient-to-br from-blue-200 to-blue-500 dark:from-blue-900 dark:to-blue-950">
+      <div className="w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+        <h1 className="mb-6 text-2xl font-bold text-center text-blue-500 dark:text-blue-400">Blood-Brain Barrier Penetration</h1>
         
-        <div className="p-4 mb-6 border border-blue-100 rounded-md bg-blue-50">
-          <p className="text-sm text-gray-700">
+        <div className="p-4 mb-6 border border-blue-100 dark:border-blue-900 rounded-md bg-blue-50 dark:bg-blue-900/30">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
             The Blood-Brain Barrier (BBB) is a highly selective membrane that separates the circulating blood from the brain and extracellular fluid. This tool predicts whether a compound can penetrate this barrier, which is crucial for developing drugs that target the central nervous system.
           </p>
         </div>
         
         <form onSubmit={handlePredictClick} className="flex flex-col gap-5">
           <div>
-            <label className="block mb-2 font-semibold text-gray-800" htmlFor="smiles">
+            <label className="block mb-2 font-semibold text-gray-800 dark:text-gray-200" htmlFor="smiles">
               Enter SMILES String:
             </label>
             <input
@@ -72,7 +72,7 @@ const BBBP = () => {
               value={formData.smiles}
               onChange={handleChange}
               placeholder="e.g., CC(=O)OC1=CC=CC=C1C(=O)O"
-              className="w-full px-4 py-2 text-gray-700 transition border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 text-gray-700 dark:text-gray-200 transition border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
@@ -89,11 +89,11 @@ const BBBP = () => {
         </form>
 
         {error && (
-          <div className="flex items-start p-4 mt-6 bg-orange-100 border border-orange-400 rounded-md">
-            <XCircle className="h-5 w-5 text-orange-500 mr-3 mt-0.5 flex-shrink-0" />
+          <div className="flex items-start p-4 mt-6 bg-orange-100 dark:bg-orange-900/30 border border-orange-400 dark:border-orange-700 rounded-md">
+            <XCircle className="h-5 w-5 text-orange-500 dark:text-orange-400 mr-3 mt-0.5 flex-shrink-0" />
             <div>
-              <h3 className="font-semibold text-orange-500">Error</h3>
-              <p className="text-orange-700">{error}</p>
+              <h3 className="font-semibold text-orange-500 dark:text-orange-400">Error</h3>
+              <p className="text-orange-700 dark:text-orange-300">{error}</p>
             </div>
           </div>
         )}

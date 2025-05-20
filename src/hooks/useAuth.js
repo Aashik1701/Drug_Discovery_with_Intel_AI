@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useDrugForge } from '../context/DrugForgeContext';
+import { useDrugForge } from '../context/DrugForgeContext.jsx';
 
 /**
  * Custom hook for user authentication functionality

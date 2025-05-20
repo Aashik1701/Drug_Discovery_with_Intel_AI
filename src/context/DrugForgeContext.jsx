@@ -122,7 +122,20 @@ export const DrugForgeProvider = ({ children }) => {
       if (serializedState === null) {
         return initialState;
       }
-      return JSON.parse(serializedState);
+      
+      // Parse the stored state
+      const parsedState = JSON.parse(serializedState);
+      
+      // Check if a user preference for theme exists
+      const userPrefersDark = window.matchMedia && 
+        window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      // If theme is not in stored state, use system preference
+      if (!parsedState.theme) {
+        parsedState.theme = userPrefersDark ? 'dark' : 'light';
+      }
+      
+      return parsedState;
     } catch (e) {
       console.warn('Error loading state from localStorage:', e);
       return initialState;
@@ -140,6 +153,21 @@ export const DrugForgeProvider = ({ children }) => {
       console.warn('Error saving state to localStorage:', e);
     }
   }, [state]);
+  
+  // Initialize theme from system preference if not already set
+  useEffect(() => {
+    // If theme is already set in state, do nothing
+    if (state.theme) return;
+    
+    const userPrefersDark = window.matchMedia && 
+      window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (userPrefersDark) {
+      dispatch({ type: ActionTypes.SET_THEME, payload: 'dark' });
+    } else {
+      dispatch({ type: ActionTypes.SET_THEME, payload: 'light' });
+    }
+  }, []);
 
   // Context value
   const value = {

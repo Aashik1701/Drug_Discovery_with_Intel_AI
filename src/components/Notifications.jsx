@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { X, AlertCircle, CheckCircle, Info, AlertTriangle } from 'lucide-react';
-import { useDrugForge } from '../context/DrugForgeContext';
+import { useDrugForge } from '../context/DrugForgeContext.jsx';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const notificationIcons = {
@@ -11,10 +11,10 @@ const notificationIcons = {
 };
 
 const notificationStyles = {
-  success: 'border-l-4 border-green-500 bg-green-50',
-  error: 'border-l-4 border-red-500 bg-red-50',
-  info: 'border-l-4 border-blue-500 bg-blue-50',
-  warning: 'border-l-4 border-amber-500 bg-amber-50'
+  success: 'border-l-4 border-green-500 bg-green-50 dark:bg-green-900/20',
+  error: 'border-l-4 border-red-500 bg-red-50 dark:bg-red-900/20',
+  info: 'border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20',
+  warning: 'border-l-4 border-amber-500 bg-amber-50 dark:bg-amber-900/20'
 };
 
 const Notifications = () => {
@@ -46,7 +46,7 @@ const Notifications = () => {
   if (notifications.length === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50 flex flex-col gap-2 max-w-sm w-full">
+    <div className="fixed z-50 flex flex-col w-full max-w-sm gap-2 top-4 right-4">
       <AnimatePresence>
         {notifications.map(notification => (
           <motion.div
@@ -63,17 +63,17 @@ const Notifications = () => {
             </div>
             <div className="flex-grow">
               {notification.title && (
-                <h4 className="text-sm font-semibold text-gray-800">
+                <h4 className="text-sm font-semibold text-gray-800 dark:text-gray-100">
                   {notification.title}
                 </h4>
               )}
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-gray-600 dark:text-gray-300">
                 {notification.message}
               </p>
             </div>
             <button
               onClick={() => removeNotification(notification.id)}
-              className="flex-shrink-0 ml-2 text-gray-400 hover:text-gray-600 focus:outline-none"
+              className="flex-shrink-0 ml-2 text-gray-400 hover:text-gray-600 dark:text-gray-400 dark:hover:text-gray-200 focus:outline-none"
             >
               <X size={16} />
             </button>

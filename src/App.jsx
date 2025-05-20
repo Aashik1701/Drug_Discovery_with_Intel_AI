@@ -39,6 +39,7 @@ const Dashboard = lazy(() => import('./components/Dashboard.jsx'));
 const ProfilePage = lazy(() => import('./components/Profile.jsx'));
 const Features = lazy(() => import('./components/Features.jsx'));
 const Contact = lazy(() => import('./components/contact.jsx'));
+const ThemeDemo = lazy(() => import('./components/ThemeDemo.jsx'));
 
 // Lazy-loaded Prediction Components
 const SolubilityChecker = lazy(() => import('./components/SolubilityChecker.jsx'));
@@ -58,7 +59,7 @@ const App = () => {
       <AuthProvider>
         <DrugForgeProvider>
           <ThemeProvider>
-            <div className="flex flex-col min-h-screen">
+            <div className="flex flex-col min-h-screen transition-colors duration-300 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
               <Header />
               <Notifications />
               <main className="flex-grow pt-16">
@@ -75,8 +76,8 @@ const App = () => {
                     <Route path="/register" element={<RegisterPage />} />
                     <Route path="/signin" element={<SignInPage />} />
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/theme-demo" element={<ThemeDemo />} />
                     
-                   
                     {/* Prediction Tools - No login required */}
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/solubility-checker" element={<SolubilityChecker />} />

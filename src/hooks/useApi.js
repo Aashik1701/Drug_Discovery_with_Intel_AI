@@ -1,7 +1,7 @@
 // Custom hook for API calls that provides a standardized way to call endpoints
 import { useState, useCallback } from 'react';
 import axios from 'axios';
-import { useDrugForge } from '../context/DrugForgeContext';
+import { useDrugForge } from '../context/DrugForgeContext.jsx';
 
 /**
  * Custom hook for making API calls with automatic loading state, error handling,

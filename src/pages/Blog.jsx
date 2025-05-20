@@ -17,7 +17,7 @@ const Blog = () => {
   };
 
   return (
-    <div className="min-h-screen p-8 text-white bg-gradient-to-b from-gray-900 to-black">
+    <div className="min-h-screen p-8 text-white dark:text-gray-100 bg-gradient-to-b from-gray-900 to-black dark:from-gray-900 dark:to-black">
       <div className="relative mx-auto max-w-7xl">
         <video 
           autoPlay 
@@ -30,7 +30,7 @@ const Blog = () => {
         </video>
 
         <motion.h1 
-          className="mb-12 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 animate-pulse"
+          className="mb-12 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 dark:from-blue-300 dark:to-purple-500 animate-pulse"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}

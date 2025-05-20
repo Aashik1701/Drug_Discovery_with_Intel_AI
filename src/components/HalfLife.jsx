@@ -61,22 +61,22 @@ const HalfLife = () => {
   const halfLifeCategory = prediction.halfLife ? categorizeHalfLife(prediction.halfLife) : null;
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-5 bg-gradient-to-br from-blue-200 to-blue-500">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
-        <h1 className="mb-4 text-2xl font-bold text-center text-blue-500">Drug Half-Life Prediction</h1>
+    <div className="flex items-center justify-center min-h-screen p-5 bg-gradient-to-br from-blue-200 to-blue-500 dark:from-blue-900 dark:to-gray-900">
+      <div className="w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg">
+        <h1 className="mb-4 text-2xl font-bold text-center text-blue-500 dark:text-blue-400">Drug Half-Life Prediction</h1>
         
-        <div className="p-4 mb-6 border border-blue-100 rounded-md bg-blue-50">
-          <p className="mb-2 text-sm text-gray-700">
+        <div className="p-4 mb-6 border border-blue-100 dark:border-blue-900 rounded-md bg-blue-50 dark:bg-blue-900/30">
+          <p className="mb-2 text-sm text-gray-700 dark:text-gray-300">
             Half-life is the time required for the concentration of a drug to reduce to half of its starting value in the body. It's a critical pharmacokinetic parameter in drug development.
           </p>
-          <p className="text-sm text-gray-700">
+          <p className="text-sm text-gray-700 dark:text-gray-300">
             This tool predicts the half-life of a compound based on its molecular structure, helping researchers understand how long a drug might remain active in the body.
           </p>
         </div>
         
         <form onSubmit={handlePredictClick} className="flex flex-col gap-5">
           <div>
-            <label className="block mb-2 font-semibold text-gray-800" htmlFor="smiles">
+            <label className="block mb-2 font-semibold text-gray-800 dark:text-gray-200" htmlFor="smiles">
               Enter SMILES String:
             </label>
             <input
@@ -86,7 +86,7 @@ const HalfLife = () => {
               value={formData.smiles}
               onChange={handleChange}
               placeholder="e.g., CC(=O)OC1=CC=CC=C1C(=O)O"
-              className="w-full px-4 py-2 text-gray-700 transition border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-4 py-2 text-gray-700 dark:text-gray-200 transition border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               required
             />
           </div>
@@ -95,7 +95,7 @@ const HalfLife = () => {
             type="submit"
             disabled={isLoading}
             className={`w-full py-2 text-white font-semibold rounded-md transition-colors ${
-              isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+              isLoading ? "bg-gray-400 dark:bg-gray-600 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700"
             }`}
           >
             {isLoading ? "Predicting..." : "Predict Half-Life"}
@@ -103,26 +103,26 @@ const HalfLife = () => {
         </form>
 
         {error && (
-          <div className="flex items-start p-4 mt-6 bg-orange-100 border border-orange-400 rounded-md">
-            <XCircle className="h-5 w-5 text-orange-500 mr-3 mt-0.5 flex-shrink-0" />
+          <div className="flex items-start p-4 mt-6 bg-orange-100 dark:bg-orange-900/30 border border-orange-400 dark:border-orange-800 rounded-md">
+            <XCircle className="h-5 w-5 text-orange-500 dark:text-orange-400 mr-3 mt-0.5 flex-shrink-0" />
             <div>
-              <h3 className="font-semibold text-orange-500">Error</h3>
-              <p className="text-orange-700">{error}</p>
+              <h3 className="font-semibold text-orange-500 dark:text-orange-400">Error</h3>
+              <p className="text-orange-700 dark:text-orange-300">{error}</p>
             </div>
           </div>
         )}
         
         {showResult && (
-          <div className="p-4 mt-6 border border-gray-200 rounded-md bg-gray-50">
-            <h2 className="mb-2 text-lg font-semibold text-gray-800">Prediction Result:</h2>
+          <div className="p-4 mt-6 border border-gray-200 dark:border-gray-700 rounded-md bg-gray-50 dark:bg-gray-800/60">
+            <h2 className="mb-2 text-lg font-semibold text-gray-800 dark:text-gray-200">Prediction Result:</h2>
             <div className="space-y-2">
-              <p className="text-gray-700">
+              <p className="text-gray-700 dark:text-gray-300">
                 <span className="font-semibold">Predicted Half-Life:</span>{" "}
                 {prediction.halfLife !== null
                   ? `${prediction.halfLife.toFixed(2)} hours`
                   : "N/A"}
               </p>
-              <p className="text-gray-700">
+              <p className="text-gray-700 dark:text-gray-300">
                 <span className="font-semibold">Confidence:</span>{" "}
                 {prediction.confidence !== null
                   ? `${(prediction.confidence * 100).toFixed(1)}%`
@@ -130,15 +130,15 @@ const HalfLife = () => {
               </p>
               
               {halfLifeCategory && (
-                <div className="p-3 mt-4 bg-gray-100 rounded-md">
-                  <p className="font-medium">Half-life category: <span className={`${halfLifeCategory.color} font-bold`}>{halfLifeCategory.category}</span></p>
-                  <div className="h-2 mt-2 overflow-hidden bg-gray-300 rounded-full">
+                <div className="p-3 mt-4 bg-gray-100 dark:bg-gray-700 rounded-md">
+                  <p className="font-medium dark:text-gray-200">Half-life category: <span className={`${halfLifeCategory.color} dark:font-semibold dark:text-opacity-90 font-bold`}>{halfLifeCategory.category}</span></p>
+                  <div className="h-2 mt-2 overflow-hidden bg-gray-300 dark:bg-gray-600 rounded-full">
                     <div 
                       className="h-full bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500"
                       style={{ width: `${Math.min(100, (prediction.halfLife / 24) * 100)}%` }}
                     ></div>
                   </div>
-                  <div className="flex justify-between mt-1 text-xs">
+                  <div className="flex justify-between mt-1 text-xs dark:text-gray-300">
                     <span>0h</span>
                     <span>6h</span>
                     <span>12h</span>

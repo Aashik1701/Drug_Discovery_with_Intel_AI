@@ -1,6 +1,6 @@
 // Custom hook for molecule data handling
 import { useState, useCallback } from 'react';
-import { useDrugForge } from '../context/DrugForgeContext';
+import { useDrugForge } from '../context/DrugForgeContext.jsx';
 import { useApi } from './useApi';
 
 /**

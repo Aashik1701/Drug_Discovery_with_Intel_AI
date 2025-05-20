@@ -79,18 +79,18 @@ const AuthForm = ({ mode = 'login' }) => {
   
   return (
     <ErrorBoundary>
-      <div className="flex min-h-screen items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="flex items-center justify-center min-h-screen px-4 py-12 bg-gray-50 dark:bg-gray-900 sm:px-6 lg:px-8">
         <div className="w-full max-w-md space-y-8">
           {/* Header */}
           <div>
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+            <h2 className="mt-6 text-3xl font-extrabold text-center text-gray-900 dark:text-gray-100">
               {mode === 'login' ? 'Sign in to your account' : 'Create a new account'}
             </h2>
-            <p className="mt-2 text-center text-sm text-gray-600">
+            <p className="mt-2 text-sm text-center text-gray-600 dark:text-gray-400">
               {mode === 'login' ? 'New to DrugForge?' : 'Already have an account?'}{' '}
               <Link
                 to={mode === 'login' ? '/register' : '/signin'}
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
               >
                 {mode === 'login' ? 'Register now' : 'Sign in'}
               </Link>
@@ -113,7 +113,7 @@ const AuthForm = ({ mode = 'login' }) => {
                     autoComplete="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="relative block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                    className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-md appearance-none dark:border-gray-600 dark:text-gray-100 dark:bg-gray-800 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                     placeholder="Full Name"
                   />
                 </div>
@@ -132,7 +132,7 @@ const AuthForm = ({ mode = 'login' }) => {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="relative block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-md appearance-none dark:border-gray-600 dark:text-gray-100 dark:bg-gray-800 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                   placeholder="Email address"
                 />
               </div>
@@ -150,7 +150,7 @@ const AuthForm = ({ mode = 'login' }) => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="relative block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                  className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-md appearance-none dark:border-gray-600 dark:text-gray-100 dark:bg-gray-800 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                   placeholder="Password"
                 />
               </div>
@@ -169,7 +169,7 @@ const AuthForm = ({ mode = 'login' }) => {
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="relative block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
+                    className="relative block w-full px-3 py-2 text-gray-900 placeholder-gray-500 bg-white border border-gray-300 rounded-md appearance-none dark:border-gray-600 dark:text-gray-100 dark:bg-gray-800 dark:placeholder-gray-400 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-blue-500 sm:text-sm"
                     placeholder="Confirm Password"
                   />
                 </div>
@@ -178,16 +178,16 @@ const AuthForm = ({ mode = 'login' }) => {
 
             {/* Error message */}
             {(formError || error) && (
-              <div className="flex items-center space-x-2 rounded-md bg-red-50 p-3 text-sm text-red-700">
-                <AlertCircle className="h-5 w-5 text-red-500" />
+              <div className="flex items-center p-3 space-x-2 text-sm text-red-700 rounded-md bg-red-50 dark:bg-red-900/30 dark:text-red-300">
+                <AlertCircle className="w-5 h-5 text-red-500 dark:text-red-400" />
                 <p>{formError || error}</p>
               </div>
             )}
 
             {/* Success message */}
             {formSuccess && (
-              <div className="flex items-center space-x-2 rounded-md bg-green-50 p-3 text-sm text-green-700">
-                <CheckCircle className="h-5 w-5 text-green-500" />
+              <div className="flex items-center p-3 space-x-2 text-sm text-green-700 rounded-md bg-green-50 dark:bg-green-900/30 dark:text-green-300">
+                <CheckCircle className="w-5 h-5 text-green-500 dark:text-green-400" />
                 <p>{formSuccess}</p>
               </div>
             )}
@@ -197,13 +197,13 @@ const AuthForm = ({ mode = 'login' }) => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="group relative flex w-full justify-center rounded-md border border-transparent bg-blue-600 py-2 px-4 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="relative flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md group dark:bg-blue-700 hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-offset-2 dark:focus:ring-offset-gray-800"
               >
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
                   {isLoading ? (
-                    <Loader2 className="h-5 w-5 animate-spin text-blue-300" />
+                    <Loader2 className="w-5 h-5 text-blue-300 animate-spin" />
                   ) : (
-                    <LogIn className="h-5 w-5 text-blue-300" />
+                    <LogIn className="w-5 h-5 text-blue-300" />
                   )}
                 </span>
                 {mode === 'login'
@@ -219,7 +219,7 @@ const AuthForm = ({ mode = 'login' }) => {
 
           {/* Helper text */}
           <div className="mt-6">
-            <p className="text-center text-sm text-gray-600">
+            <p className="text-sm text-center text-gray-600">
               By {mode === 'login' ? 'signing in' : 'registering'}, you agree to our{' '}
               <Link to="/terms" className="font-medium text-blue-600 hover:text-blue-500">
                 Terms of Service

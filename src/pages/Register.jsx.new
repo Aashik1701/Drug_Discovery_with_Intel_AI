@@ -4,7 +4,7 @@ import ErrorBoundary from '../components/ErrorBoundary';
 
 /**
  * Register page component using AuthForm with Tailwind CSS
- * Styled with dark/light theme support
+ * The old CSS-based implementation has been replaced with the reusable AuthForm component
  */
 const RegisterPage = () => {
   return (

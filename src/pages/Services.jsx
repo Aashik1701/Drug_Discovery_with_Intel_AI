@@ -105,10 +105,10 @@ const Services = () => {
   };
 
   return (
-    <div className="min-h-screen p-8 text-white bg-gradient-to-b from-gray-900 to-black">
+    <div className="min-h-screen p-8 text-white dark:text-gray-100 bg-gradient-to-b from-gray-900 to-black dark:from-gray-900 dark:to-black">
       <div className="mx-auto max-w-7xl"></div>
         {/* Header with animation */}
-        <h1 className="mb-12 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 animate-pulse">
+        <h1 className="mb-12 text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600 dark:from-blue-300 dark:to-purple-500 animate-pulse">
           DrugForge Services
         </h1>
         
@@ -120,9 +120,9 @@ const Services = () => {
               placeholder="Search services..."
               value={searchTerm}
               onChange={handleSearchChange}
-              className="w-full p-4 text-white transition-all duration-300 border border-gray-700 rounded-xl bg-gray-800/50 backdrop-blur-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50"
+              className="w-full p-4 text-white dark:text-gray-100 transition-all duration-300 border border-gray-700 dark:border-gray-600 rounded-xl bg-gray-800/50 dark:bg-gray-800/70 backdrop-blur-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50"
             />
-            <span className="absolute text-gray-400 right-4 top-4">
+            <span className="absolute text-gray-400 dark:text-gray-300 right-4 top-4">
               <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>

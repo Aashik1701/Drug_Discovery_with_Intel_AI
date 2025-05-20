@@ -2,7 +2,7 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import axios from 'axios';
 import { useApi } from '../hooks';
-import { DrugForgeProvider } from '../context/DrugForgeContext';
+import { DrugForgeProvider } from '../context/DrugForgeContext.jsx';
 
 // Mock axios
 jest.mock('axios');
