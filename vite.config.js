@@ -20,7 +20,16 @@ export default defineConfig({
   },
   build: {
     outDir: 'build',
-    sourcemap: true,
+    sourcemap: false, // Disable sourcemaps for production to reduce build size
     chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          ui: ['@mui/material', '@emotion/react', '@emotion/styled'],
+          utils: ['axios', 'react-markdown', 'framer-motion']
+        }
+      }
+    }
   },
 });
