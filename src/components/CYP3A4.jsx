@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { XCircle } from "lucide-react";
+import { useDrugForge } from '../context/DrugForgeContext';
 
 const CYP3A4 = () => {
+  const { isDarkMode } = useDrugForge();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ smiles: "" });
   const [prediction, setPrediction] = useState({
@@ -50,12 +52,28 @@ const CYP3A4 = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-5 bg-gradient-to-br from-blue-200 to-blue-500">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
-        <h1 className="mb-4 text-2xl font-bold text-center text-blue-500">CYP3A4 Interaction Prediction</h1>
+    <div className={`flex items-center justify-center min-h-screen p-5 transition-colors duration-200 ${
+      isDarkMode 
+        ? 'bg-gradient-to-br from-gray-900 to-gray-800' 
+        : 'bg-gradient-to-br from-blue-200 to-blue-500'
+    }`}>
+      <div className={`w-full max-w-md p-6 rounded-lg shadow-lg transition-colors duration-200 ${
+        isDarkMode 
+          ? 'bg-gray-800 border border-gray-600' 
+          : 'bg-white'
+      }`}>
+        <h1 className={`mb-4 text-2xl font-bold text-center transition-colors duration-200 ${
+          isDarkMode ? 'text-blue-400' : 'text-blue-500'
+        }`}>CYP3A4 Interaction Prediction</h1>
         
-        <div className="p-4 mb-6 border border-blue-100 rounded-md bg-blue-50">
-          <p className="text-sm text-gray-700">
+        <div className={`p-4 mb-6 border rounded-md transition-colors duration-200 ${
+          isDarkMode 
+            ? 'bg-blue-900/20 border-blue-700' 
+            : 'bg-blue-50 border-blue-100'
+        }`}>
+          <p className={`mb-2 text-sm transition-colors duration-200 ${
+            isDarkMode ? 'text-gray-300' : 'text-gray-700'
+          }`}>
             CYP3A4 is an important enzyme responsible for metabolizing many medications in the body. 
             This tool predicts whether a compound will interact with CYP3A4, which is crucial for 
             identifying potential drug-drug interactions.
@@ -64,7 +82,9 @@ const CYP3A4 = () => {
         
         <form onSubmit={handlePredictClick} className="flex flex-col gap-5">
           <div>
-            <label className="block mb-2 font-semibold text-gray-800" htmlFor="smiles">
+            <label className={`block mb-2 font-semibold transition-colors duration-200 ${
+              isDarkMode ? 'text-gray-200' : 'text-gray-800'
+            }`} htmlFor="smiles">
               Enter SMILES String:
             </label>
             <input
@@ -74,7 +94,11 @@ const CYP3A4 = () => {
               value={formData.smiles}
               onChange={handleChange}
               placeholder="e.g., CC(=O)OC1=CC=CC=C1C(=O)O"
-              className="w-full px-4 py-2 text-gray-700 transition border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${
+                isDarkMode 
+                  ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' 
+                  : 'bg-white border-gray-300 text-gray-700'
+              }`}
               required
             />
           </div>
@@ -91,30 +115,56 @@ const CYP3A4 = () => {
         </form>
 
         {error && (
-          <div className="flex items-start p-4 mt-6 bg-orange-100 border border-orange-400 rounded-md">
-            <XCircle className="h-5 w-5 text-orange-500 mr-3 mt-0.5 flex-shrink-0" />
+          <div className={`flex items-start p-4 mt-6 border rounded-md transition-colors duration-200 ${
+            isDarkMode 
+              ? 'bg-red-900/20 border-red-600' 
+              : 'bg-orange-100 border-orange-400'
+          }`}>
+            <XCircle className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${
+              isDarkMode ? 'text-red-400' : 'text-orange-500'
+            }`} />
             <div>
-              <h3 className="font-semibold text-orange-500">Error</h3>
-              <p className="text-orange-700">{error}</p>
+              <h3 className={`font-semibold ${
+                isDarkMode ? 'text-red-400' : 'text-orange-500'
+              }`}>Error</h3>
+              <p className={isDarkMode ? 'text-red-300' : 'text-orange-700'}>{error}</p>
             </div>
           </div>
         )}
         
         {showResult && (
-          <div className="p-4 mt-6 border border-gray-200 rounded-md bg-gray-50">
-            <h2 className="mb-2 text-lg font-semibold text-gray-800">Prediction Result:</h2>
+          <div className={`p-4 mt-6 border rounded-md transition-colors duration-200 ${
+            isDarkMode 
+              ? 'bg-gray-700 border-gray-600' 
+              : 'bg-gray-50 border-gray-200'
+          }`}>
+            <h2 className={`mb-2 text-lg font-semibold transition-colors duration-200 ${
+              isDarkMode ? 'text-gray-200' : 'text-gray-800'
+            }`}>Prediction Result:</h2>
             <div className="space-y-2">
-              <p className="text-gray-700">
+              <p className={`transition-colors duration-200 ${
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
                 <span className="font-semibold">Predicted Class:</span>{" "}
                 {prediction.predictedClass}
               </p>
-              <p className="text-gray-700">
+              <p className={`transition-colors duration-200 ${
+                isDarkMode ? 'text-gray-300' : 'text-gray-700'
+              }`}>
                 <span className="font-semibold">Probability:</span>{" "}
                 {prediction.predictedProbability !== null
                   ? prediction.predictedProbability.toFixed(4)
                   : "N/A"}
               </p>
-              <p className={`mt-2 p-2 ${prediction.predictedClass === 1 ? "bg-yellow-50 border-l-4 border-yellow-500" : "bg-green-50 border-l-4 border-green-500"} rounded`}>
+              <p className={`mt-2 p-2 border-l-4 rounded transition-colors duration-200 ${
+                prediction.predictedClass === 1 
+                  ? isDarkMode 
+                    ? "bg-yellow-900/20 border-yellow-500 text-gray-300" 
+                    : "bg-yellow-50 border-yellow-500 text-gray-700"
+                  : isDarkMode
+                    ? "bg-green-900/20 border-green-500 text-gray-300"
+                    : "bg-green-50 border-green-500 text-gray-700"
+              }`}>
                 {prediction.predictedClass === 1
                   ? "This compound is likely to interact with CYP3A4. Consider potential drug-drug interactions."
                   : "This compound is unlikely to interact with CYP3A4."}

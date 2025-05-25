@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { XCircle } from "lucide-react";
+import { useDrugForge } from "../context/DrugForgeContext";
 
 const HEPG2 = () => {
+  const { isDarkMode } = useDrugForge();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ smiles: "" });
   const [prediction, setPrediction] = useState({
@@ -50,23 +52,43 @@ const HEPG2 = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-5 bg-gradient-to-br from-blue-200 to-blue-500">
-      <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
-        <h1 className="mb-4 text-2xl font-bold text-center text-blue-500">HEPG2 Toxicity Prediction</h1>
-        <h2 className="mb-2 text-lg font-semibold text-center text-gray-800">Human Hepatocellular Carcinoma</h2>
+    <div className={`flex items-center justify-center min-h-screen p-5 ${
+      isDarkMode 
+        ? "bg-gradient-to-br from-gray-900 to-gray-800" 
+        : "bg-gradient-to-br from-blue-200 to-blue-500"
+    }`}>
+      <div className={`w-full max-w-md p-6 rounded-lg shadow-lg ${
+        isDarkMode ? "bg-gray-800" : "bg-white"
+      }`}>
+        <h1 className={`mb-4 text-2xl font-bold text-center ${
+          isDarkMode ? "text-blue-400" : "text-blue-500"
+        }`}>HEPG2 Toxicity Prediction</h1>
+        <h2 className={`mb-2 text-lg font-semibold text-center ${
+          isDarkMode ? "text-gray-200" : "text-gray-800"
+        }`}>Human Hepatocellular Carcinoma</h2>
         
-        <div className="p-4 mb-6 border border-blue-100 rounded-md bg-blue-50">
-          <p className="mb-2 text-sm text-gray-700">
+        <div className={`p-4 mb-6 border rounded-md ${
+          isDarkMode 
+            ? "border-gray-600 bg-gray-700" 
+            : "border-blue-100 bg-blue-50"
+        }`}>
+          <p className={`mb-2 text-sm ${
+            isDarkMode ? "text-gray-300" : "text-gray-700"
+          }`}>
             HEPG2 cells are a human liver cancer cell line used to test compounds for hepatotoxicity (liver toxicity). This is a critical safety assessment in drug development.
           </p>
-          <p className="text-sm text-gray-700">
+          <p className={`text-sm ${
+            isDarkMode ? "text-gray-300" : "text-gray-700"
+          }`}>
             This tool predicts whether a compound will exhibit toxicity to HEPG2 cells, helping to identify potential liver-toxic compounds early in drug discovery.
           </p>
         </div>
         
         <form onSubmit={handlePredictClick} className="flex flex-col gap-5">
           <div>
-            <label className="block mb-2 font-semibold text-gray-800" htmlFor="smiles">
+            <label className={`block mb-2 font-semibold ${
+              isDarkMode ? "text-gray-200" : "text-gray-800"
+            }`} htmlFor="smiles">
               Enter SMILES String:
             </label>
             <input
@@ -76,7 +98,11 @@ const HEPG2 = () => {
               value={formData.smiles}
               onChange={handleChange}
               placeholder="e.g., CC(=O)OC1=CC=CC=C1C(=O)O"
-              className="w-full px-4 py-2 text-gray-700 transition border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className={`w-full px-4 py-2 transition border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                isDarkMode 
+                  ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400" 
+                  : "bg-white border-gray-300 text-gray-700 placeholder-gray-500"
+              }`}
               required
             />
           </div>
@@ -84,8 +110,12 @@ const HEPG2 = () => {
           <button
             type="submit"
             disabled={isLoading}
-            className={`w-full py-2 text-white font-semibold rounded-md transition-colors ${
-              isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+            className={`w-full py-2 font-semibold rounded-md transition-colors ${
+              isLoading 
+                ? "bg-gray-400 cursor-not-allowed text-gray-200" 
+                : isDarkMode
+                ? "bg-blue-600 hover:bg-blue-700 text-white"
+                : "bg-blue-500 hover:bg-blue-600 text-white"
             }`}
           >
             {isLoading ? "Predicting..." : "Predict HEPG2 Toxicity"}
@@ -93,30 +123,52 @@ const HEPG2 = () => {
         </form>
 
         {error && (
-          <div className="flex items-start p-4 mt-6 bg-orange-100 border border-orange-400 rounded-md">
-            <XCircle className="h-5 w-5 text-orange-500 mr-3 mt-0.5 flex-shrink-0" />
+          <div className={`flex items-start p-4 mt-6 border rounded-md ${
+            isDarkMode 
+              ? "bg-red-900/50 border-red-700" 
+              : "bg-orange-100 border-orange-400"
+          }`}>
+            <XCircle className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${
+              isDarkMode ? "text-red-400" : "text-orange-500"
+            }`} />
             <div>
-              <h3 className="font-semibold text-orange-500">Error</h3>
-              <p className="text-orange-700">{error}</p>
+              <h3 className={`font-semibold ${
+                isDarkMode ? "text-red-400" : "text-orange-500"
+              }`}>Error</h3>
+              <p className={isDarkMode ? "text-red-300" : "text-orange-700"}>{error}</p>
             </div>
           </div>
         )}
         
         {showResult && (
-          <div className="p-4 mt-6 border border-gray-200 rounded-md bg-gray-50">
-            <h2 className="mb-2 text-lg font-semibold text-gray-800">Prediction Result:</h2>
+          <div className={`p-4 mt-6 border rounded-md ${
+            isDarkMode 
+              ? "border-gray-600 bg-gray-700" 
+              : "border-gray-200 bg-gray-50"
+          }`}>
+            <h2 className={`mb-2 text-lg font-semibold ${
+              isDarkMode ? "text-gray-200" : "text-gray-800"
+            }`}>Prediction Result:</h2>
             <div className="space-y-2">
-              <p className="text-gray-700">
+              <p className={isDarkMode ? "text-gray-300" : "text-gray-700"}>
                 <span className="font-semibold">Predicted Class:</span>{" "}
                 {prediction.predictedClass}
               </p>
-              <p className="text-gray-700">
+              <p className={isDarkMode ? "text-gray-300" : "text-gray-700"}>
                 <span className="font-semibold">Probability:</span>{" "}
                 {prediction.predictedProbability !== null
                   ? prediction.predictedProbability.toFixed(4)
                   : "N/A"}
               </p>
-              <p className={`mt-2 p-2 ${prediction.predictedClass === 1 ? "bg-red-50 border-l-4 border-red-500" : "bg-green-50 border-l-4 border-green-500"} rounded`}>
+              <p className={`mt-2 p-2 rounded ${
+                prediction.predictedClass === 1 
+                  ? isDarkMode
+                    ? "bg-red-900/50 border-l-4 border-red-500 text-red-300"
+                    : "bg-red-50 border-l-4 border-red-500 text-red-800"
+                  : isDarkMode
+                    ? "bg-green-900/50 border-l-4 border-green-500 text-green-300"
+                    : "bg-green-50 border-l-4 border-green-500 text-green-800"
+              }`}>
                 {prediction.predictedClass === 1
                   ? "This compound is predicted to be toxic to HEPG2 cells, suggesting potential liver toxicity concerns."
                   : "This compound is predicted to be non-toxic to HEPG2 cells, suggesting a favorable liver safety profile."}

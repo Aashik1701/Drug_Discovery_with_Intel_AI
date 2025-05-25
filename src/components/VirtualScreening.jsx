@@ -8,7 +8,7 @@ const VirtualScreening = () => {
   // Use custom hooks
   const { smiles, setSmiles, isValidSmiles, submitSmiles } = useMolecule();
   const { get, loading } = useApi();
-  const { state, addFavorite } = useDrugForge();
+  const { state, addFavorite, isDarkMode } = useDrugForge();
   
   // Component state
   const [targetProtein, setTargetProtein] = useState("");
@@ -137,9 +137,13 @@ const VirtualScreening = () => {
   return (
     <ErrorBoundary>
       <div className="max-w-6xl mx-auto mt-16 mb-20 px-4 sm:px-6 lg:px-8">
-        <div className="bg-white shadow-xl rounded-lg overflow-hidden">
+        <div className={`shadow-xl rounded-lg overflow-hidden ${isDarkMode ? 'bg-gray-800' : 'bg-white'}`}>
           {/* Header */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 px-6 py-4 sm:px-8 sm:py-6">
+          <div className={`${
+            isDarkMode 
+              ? 'bg-gradient-to-r from-blue-700 to-indigo-800' 
+              : 'bg-gradient-to-r from-blue-600 to-indigo-700'
+          } px-6 py-4 sm:px-8 sm:py-6`}>
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-white sm:text-3xl">
@@ -151,7 +155,11 @@ const VirtualScreening = () => {
               </div>
               <button 
                 onClick={() => setInfoPanelOpen(!infoPanelOpen)}
-                className="mt-4 md:mt-0 inline-flex items-center px-3 py-2 border border-blue-300 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className={`mt-4 md:mt-0 inline-flex items-center px-3 py-2 border text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                  isDarkMode
+                    ? 'border-blue-400 text-blue-100 bg-blue-700 hover:bg-blue-600 focus:ring-blue-400'
+                    : 'border-blue-300 text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
+                }`}
               >
                 <Info className="mr-2 h-4 w-4" />
                 How it works
@@ -160,13 +168,17 @@ const VirtualScreening = () => {
           </div>
 
           {/* Tabs */}
-          <div className="border-b border-gray-200">
+          <div className={`border-b ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
             <nav className="flex -mb-px">
               <button
                 className={`w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm ${
                   selectedTab === "single"
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? isDarkMode 
+                      ? "border-blue-400 text-blue-400"
+                      : "border-blue-500 text-blue-600"
+                    : isDarkMode
+                      ? "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-500"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
                 onClick={() => setSelectedTab("single")}
               >
@@ -175,8 +187,12 @@ const VirtualScreening = () => {
               <button
                 className={`w-1/2 py-4 px-1 text-center border-b-2 font-medium text-sm ${
                   selectedTab === "batch"
-                    ? "border-blue-500 text-blue-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                    ? isDarkMode 
+                      ? "border-blue-400 text-blue-400"
+                      : "border-blue-500 text-blue-600"
+                    : isDarkMode
+                      ? "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-500"
+                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
                 onClick={() => setSelectedTab("batch")}
               >
@@ -187,14 +203,20 @@ const VirtualScreening = () => {
 
           {/* Info Panel */}
           {infoPanelOpen && (
-            <div className="bg-blue-50 p-4 border-b border-blue-100">
+            <div className={`p-4 border-b ${
+              isDarkMode 
+                ? 'bg-blue-900 border-blue-700' 
+                : 'bg-blue-50 border-blue-100'
+            }`}>
               <div className="flex">
                 <div className="flex-shrink-0">
-                  <Info className="h-5 w-5 text-blue-400" />
+                  <Info className={`h-5 w-5 ${isDarkMode ? 'text-blue-300' : 'text-blue-400'}`} />
                 </div>
                 <div className="ml-3">
-                  <h3 className="text-sm font-medium text-blue-800">How Virtual Screening Works</h3>
-                  <div className="mt-2 text-sm text-blue-700">
+                  <h3 className={`text-sm font-medium ${isDarkMode ? 'text-blue-200' : 'text-blue-800'}`}>
+                    How Virtual Screening Works
+                  </h3>
+                  <div className={`mt-2 text-sm ${isDarkMode ? 'text-blue-300' : 'text-blue-700'}`}>
                     <p>
                       Virtual screening uses computational methods to identify potentially bioactive compounds against specific target proteins:
                     </p>
@@ -208,7 +230,11 @@ const VirtualScreening = () => {
                   <div className="mt-4">
                     <button
                       type="button"
-                      className="inline-flex items-center px-2.5 py-1.5 border border-blue-300 shadow-sm text-xs font-medium rounded text-blue-700 bg-white hover:bg-blue-50 focus:outline-none"
+                      className={`inline-flex items-center px-2.5 py-1.5 border shadow-sm text-xs font-medium rounded focus:outline-none ${
+                        isDarkMode
+                          ? 'border-blue-500 text-blue-200 bg-blue-800 hover:bg-blue-700'
+                          : 'border-blue-300 text-blue-700 bg-white hover:bg-blue-50'
+                      }`}
                       onClick={() => setInfoPanelOpen(false)}
                     >
                       Got it
@@ -224,7 +250,7 @@ const VirtualScreening = () => {
             {selectedTab === "single" && (
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="smiles" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="smiles" className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                     SMILES String
                   </label>
                   <div className="mt-1">
@@ -233,33 +259,43 @@ const VirtualScreening = () => {
                       id="smiles"
                       value={smiles}
                       onChange={(e) => setSmiles(e.target.value)}
-                      className={`block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 rounded-md ${
-                        !isValidSmiles && smiles ? "border-red-300" : ""
+                      className={`block w-full shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md ${
+                        isDarkMode
+                          ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400'
+                          : 'border-gray-300'
+                      } ${
+                        !isValidSmiles && smiles 
+                          ? isDarkMode ? "border-red-400" : "border-red-300" 
+                          : ""
                       }`}
                       placeholder="Example: CC(=O)OC1=CC=CC=C1C(=O)O"
                     />
                     {!isValidSmiles && smiles && (
-                      <p className="mt-1 text-sm text-red-600">
+                      <p className={`mt-1 text-sm ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>
                         Invalid SMILES string format
                       </p>
                     )}
                   </div>
                   <div className="mt-1">
-                    <span className="text-xs text-gray-500">
+                    <span className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                       Enter the SMILES notation of the compound you want to screen
                     </span>
                   </div>
                 </div>
                 
                 <div>
-                  <label htmlFor="target" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="target" className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                     Target Protein
                   </label>
                   <select
                     id="target"
                     value={targetProtein}
                     onChange={(e) => setTargetProtein(e.target.value)}
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                    className={`mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md ${
+                      isDarkMode
+                        ? 'bg-gray-700 border-gray-600 text-gray-100'
+                        : 'border-gray-300'
+                    }`}
                   >
                     <option value="">Select a target protein</option>
                     {availableTargets.map((target) => (
@@ -274,10 +310,12 @@ const VirtualScreening = () => {
                   <button
                     type="submit"
                     disabled={loading || !isValidSmiles || !smiles || !targetProtein}
-                    className={`inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white ${
+                    className={`inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                       loading || !isValidSmiles || !smiles || !targetProtein
                         ? "bg-gray-300 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        : isDarkMode
+                          ? "bg-blue-600 hover:bg-blue-700 focus:ring-blue-400"
+                          : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500"
                     }`}
                   >
                     {loading ? (
@@ -297,16 +335,24 @@ const VirtualScreening = () => {
             {selectedTab === "batch" && (
               <form onSubmit={handleBatchSubmit} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">
+                  <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                     Upload SMILES File
                   </label>
-                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                  <div className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-md ${
+                    isDarkMode 
+                      ? 'border-gray-600 bg-gray-700' 
+                      : 'border-gray-300'
+                  }`}>
                     <div className="space-y-1 text-center">
-                      <DownloadCloud className="mx-auto h-12 w-12 text-gray-400" />
-                      <div className="flex text-sm text-gray-600">
+                      <DownloadCloud className={`mx-auto h-12 w-12 ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`} />
+                      <div className={`flex text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-600'}`}>
                         <label
                           htmlFor="file-upload"
-                          className="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500"
+                          className={`relative cursor-pointer rounded-md font-medium focus:outline-none ${
+                            isDarkMode
+                              ? 'bg-gray-700 text-blue-400 hover:text-blue-300'
+                              : 'bg-white text-blue-600 hover:text-blue-500'
+                          }`}
                         >
                           <span>Upload a file</span>
                           <input
@@ -320,27 +366,31 @@ const VirtualScreening = () => {
                         </label>
                         <p className="pl-1">or drag and drop</p>
                       </div>
-                      <p className="text-xs text-gray-500">
+                      <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         .txt or .csv with one SMILES per line
                       </p>
                     </div>
                   </div>
                   {fileSmiles.length > 0 && (
-                    <div className="mt-2 text-sm text-gray-700">
+                    <div className={`mt-2 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                       {fileSmiles.length} compounds loaded
                     </div>
                   )}
                 </div>
                 
                 <div>
-                  <label htmlFor="target-batch" className="block text-sm font-medium text-gray-700">
+                  <label htmlFor="target-batch" className={`block text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                     Target Protein
                   </label>
                   <select
                     id="target-batch"
                     value={targetProtein}
                     onChange={(e) => setTargetProtein(e.target.value)}
-                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
+                    className={`mt-1 block w-full pl-3 pr-10 py-2 text-base focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md ${
+                      isDarkMode
+                        ? 'bg-gray-700 border-gray-600 text-gray-100'
+                        : 'border-gray-300'
+                    }`}
                   >
                     <option value="">Select a target protein</option>
                     {availableTargets.map((target) => (
@@ -355,10 +405,12 @@ const VirtualScreening = () => {
                   <button
                     type="submit"
                     disabled={loading || uploadingFile || fileSmiles.length === 0 || !targetProtein}
-                    className={`inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white ${
+                    className={`inline-flex items-center px-4 py-2 border border-transparent text-base font-medium rounded-md shadow-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 ${
                       loading || uploadingFile || fileSmiles.length === 0 || !targetProtein
                         ? "bg-gray-300 cursor-not-allowed"
-                        : "bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        : isDarkMode
+                          ? "bg-blue-600 hover:bg-blue-700 focus:ring-blue-400"
+                          : "bg-blue-600 hover:bg-blue-700 focus:ring-blue-500"
                     }`}
                   >
                     {loading ? (
@@ -381,46 +433,50 @@ const VirtualScreening = () => {
 
             {/* Results Section */}
             {screeningResults && (
-              <div className="mt-8 border-t border-gray-200 pt-6">
-                <h3 className="text-lg leading-6 font-medium text-gray-900">
+              <div className={`mt-8 border-t pt-6 ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
+                <h3 className={`text-lg leading-6 font-medium ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>
                   Screening Results
                 </h3>
-                <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                <p className={`mt-1 max-w-2xl text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                   Target: {availableTargets.find(t => t.id === screeningResults.target)?.name || screeningResults.target}
                 </p>
                 
-                <div className="mt-5 border-t border-gray-200">
-                  <dl className="divide-y divide-gray-200">
+                <div className={`mt-5 border-t ${isDarkMode ? 'border-gray-600' : 'border-gray-200'}`}>
+                  <dl className={`divide-y ${isDarkMode ? 'divide-gray-600' : 'divide-gray-200'}`}>
                     {screeningResults.compounds.map((compound, index) => (
                       <div key={index} className="py-4 space-y-1 sm:grid sm:grid-cols-3 sm:gap-4">
-                        <dt className="text-sm font-medium text-gray-500">
+                        <dt className={`text-sm font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                           Compound {index + 1}
                         </dt>
-                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                          <div className="bg-gray-50 p-4 rounded-md">
+                        <dd className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${isDarkMode ? 'text-gray-100' : 'text-gray-900'}`}>
+                          <div className={`p-4 rounded-md ${isDarkMode ? 'bg-gray-700' : 'bg-gray-50'}`}>
                             <div className="flex flex-wrap gap-y-2 gap-x-4">
                               <div className="flex-1 min-w-[200px]">
-                                <p className="text-xs font-medium text-gray-500">SMILES</p>
+                                <p className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>SMILES</p>
                                 <p className="font-mono text-xs">{compound.smiles}</p>
                               </div>
                               <div>
-                                <p className="text-xs font-medium text-gray-500">Binding Affinity</p>
+                                <p className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Binding Affinity</p>
                                 <p className={`font-medium ${compound.bindingAffinity < -8.5 ? 'text-green-600' : compound.bindingAffinity < -7 ? 'text-blue-600' : 'text-yellow-600'}`}>
                                   {compound.bindingAffinity.toFixed(1)} kcal/mol
                                 </p>
                               </div>
                               <div>
-                                <p className="text-xs font-medium text-gray-500">Probability</p>
+                                <p className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Probability</p>
                                 <p className="font-medium">{(compound.probability * 100).toFixed(1)}%</p>
                               </div>
                             </div>
                             <div className="mt-3">
-                              <p className="text-xs font-medium text-gray-500">Interaction Sites</p>
+                              <p className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>Interaction Sites</p>
                               <div className="flex flex-wrap gap-2 mt-1">
                                 {compound.interactionSites.map((site) => (
                                   <span
                                     key={site}
-                                    className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium bg-blue-100 text-blue-800"
+                                    className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium ${
+                                      isDarkMode
+                                        ? 'bg-blue-800 text-blue-200'
+                                        : 'bg-blue-100 text-blue-800'
+                                    }`}
                                   >
                                     {site}
                                   </span>
@@ -430,7 +486,11 @@ const VirtualScreening = () => {
                             <div className="mt-3 flex justify-end">
                               <button
                                 onClick={() => handleFavorite(compound)}
-                                className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                className={`inline-flex items-center px-2.5 py-1.5 border text-xs font-medium rounded focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+                                  isDarkMode
+                                    ? 'border-gray-500 text-gray-200 bg-gray-600 hover:bg-gray-500 focus:ring-blue-400'
+                                    : 'border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:ring-blue-500'
+                                }`}
                               >
                                 Save to Favorites
                               </button>
