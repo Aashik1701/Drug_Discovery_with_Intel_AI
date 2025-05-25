@@ -4,27 +4,12 @@
     {
       "src": "package.json",
       "use": "@vercel/static-build",
-      "config": {
-        "distDir": "build",
-        "buildCommand": "npm run build"
-      }
-    }
-  ],
-  "routes": [
+      "config": { "distDir": "dist" }
+    },
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "src": "_roxi/.roxi/*.js",
+      "use": "@vercel/node",
+      "config": { "includeFiles": "dist/**" }
     }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "functions": {
-    "src/**/*.{js,ts}": {
-      "maxDuration": 60
-    }
-  },
-  "github": {
-    "silent": true
-  }
+  ]
 }
