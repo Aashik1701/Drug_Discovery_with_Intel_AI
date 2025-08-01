@@ -26,7 +26,7 @@ const Header = () => {
           <ul className="flex space-x-8">
             {[
               { path: '/services', label: 'Services' },
-              { path: '/blog', label: 'Blogs' },
+              // { path: '/blog', label: 'Blogs' },
               { path: '/features', label: 'Features' },
               { path: '/contact', label: 'Contact' },
               { path: '/pricing', label: 'Pricing' },

@@ -15,8 +15,42 @@ export const smilesParser = (smiles) => {
 
 // Validate SMILES string format
 export const validateSmiles = (smiles) => {
-  const smilesPattern = /^([^J][a-z0-9@+\-\[\]\(\)\\\/%=#$]{6,})$/i;
-  return smilesPattern.test(smiles);
+  if (!smiles || typeof smiles !== 'string') {
+    return { valid: false, error: 'SMILES string is required' };
+  }
+  
+  // Basic length check
+  if (smiles.length < 3) {
+    return { valid: false, error: 'SMILES string too short' };
+  }
+  
+  if (smiles.length > 1000) {
+    return { valid: false, error: 'SMILES string too long' };
+  }
+  
+  // Check for basic SMILES characters
+  const validSmilesPattern = /^[a-zA-Z0-9@+\-\[\]\(\)\\\/%=#\.\:]+$/;
+  if (!validSmilesPattern.test(smiles)) {
+    return { valid: false, error: 'Contains invalid characters' };
+  }
+  
+  // Check for balanced brackets and parentheses
+  const brackets = { '[': 0, '(': 0 };
+  for (let char of smiles) {
+    if (char === '[') brackets['[']++;
+    if (char === ']') brackets['[']--;
+    if (char === '(') brackets['(']++;
+    if (char === ')') brackets['(']--;
+    if (brackets['['] < 0 || brackets['('] < 0) {
+      return { valid: false, error: 'Unbalanced brackets or parentheses' };
+    }
+  }
+  
+  if (brackets['['] !== 0 || brackets['('] !== 0) {
+    return { valid: false, error: 'Unbalanced brackets or parentheses' };
+  }
+  
+  return { valid: true };
 };
 
 // Format prediction results for display

@@ -48,12 +48,25 @@ DrugForge is an advanced AI-powered platform designed to revolutionize drug disc
 | Solubility | `/predict/solubility` | SMILES | LogS value |
 | Toxicity | `/predict/toxicity` | SMILES | Safety assessment |
 
-### 1. Frontend Setup
+## 🛠️ Quick Start
+
+### Automated Setup
 ```bash
-# Clone the repository
+# Clone and setup everything automatically
 git clone https://github.com/your-username/DrugForge.git
 cd Drug_Discovery_with_Intel_AI
+./setup.sh
+```
 
+### Manual Setup
+
+#### Prerequisites
+- Node.js 16+
+- Python 3.8+
+- Git
+
+#### 1. Frontend Setup
+```bash
 # Install dependencies
 npm install
 
@@ -61,13 +74,13 @@ npm install
 npm start
 ```
 
-### 2. Backend Setup
+#### 2. Backend Setup
 ```bash
-# Navigate to backend directory
+# Navigate to backend
 cd backendML
 
 # Create virtual environment
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
 # Install dependencies
@@ -77,7 +90,13 @@ pip install -r requirements.txt
 python app.py
 ```
 
-### 3. Access Application
+### 3. Verify Installation
+```bash
+# Run comprehensive system tests
+./test-system.sh
+```
+
+### 4. Access Application
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:5001
 - **Health Check**: http://localhost:5001/health

@@ -28,7 +28,7 @@ import ProtectedRoute from './components/ProtectedRoute.jsx';
 // Lazy-loaded Page Components
 const Hero = lazy(() => import('./pages/Hero.jsx'));
 const Services = lazy(() => import('./pages/Services.jsx'));
-const Blog = lazy(() => import('./pages/Blog.jsx'));
+// const Blog = lazy(() => import('./pages/Blog.jsx'));
 const RegisterPage = lazy(() => import('./pages/Register.jsx'));
 const SignInPage = lazy(() => import('./pages/SignIn.jsx'));
 const Pricing = lazy(() => import('./pages/Pricing.jsx'));
@@ -67,7 +67,7 @@ const App = () => {
                     {/* Main Pages */}
                     <Route path="/" element={<Hero />} />
                     <Route path="/features" element={<Features />} />
-                    <Route path="/blog" element={<Blog />} />
+                    {/* <Route path="/blog" element={<Blog />} /> */}
                     <Route path="/services" element={<Services />} />
                     <Route path="/pricing" element={<Pricing />} />
                     

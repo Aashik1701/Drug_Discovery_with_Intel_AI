@@ -14,14 +14,31 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Initialize Flask app
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins=['http://localhost:3000', 'http://127.0.0.1:3000'])
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
 
 # Model storage
 models = {}
+
+# Error handling decorator
+def handle_api_errors(f):
+    def wrapper(*args, **kwargs):
+        try:
+            return f(*args, **kwargs)
+        except ValueError as e:
+            logger.error(f"Validation error in {f.__name__}: {str(e)}")
+            return jsonify({'error': str(e), 'type': 'validation_error'}), 400
+        except Exception as e:
+            logger.error(f"Unexpected error in {f.__name__}: {str(e)}")
+            return jsonify({'error': 'Internal server error', 'type': 'server_error'}), 500
+    wrapper.__name__ = f.__name__
+    return wrapper
 
 def load_models():
     """Load all ML models on startup"""
