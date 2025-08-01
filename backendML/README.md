@@ -1,63 +1,48 @@
-# Drug Discovery ML Backend
+# DrugForge Backend API
 
-This directory contains the machine learning models and API endpoints for drug discovery predictions.
+## 🚀 Flask API Server for ML Predictions
 
-## Models Available
+This directory contains the backend API server that powers DrugForge's machine learning predictions.
 
-- **ADMET Properties**: Absorption, Distribution, Metabolism, Excretion, and Toxicity prediction models
-- **Drug-Target Binding**: Binding affinity prediction models
-- **Molecular Docking**: Protein-ligand docking simulations
-- **Target Identification**: Protein target prediction models
+### 📂 Structure
 
-## API Endpoints
-
-### Prediction Endpoints
-- `/predict/bbbp` - Blood-Brain Barrier Penetration
-- `/predict/cyp3a4` - CYP3A4 Interaction
-- `/predict/half-life` - Half-Life Prediction
-- `/predict/cox2` - COX2 Inhibition
-- `/predict/hepg2` - HEPG2 Toxicity
-- `/predict/solubility` - Solubility Prediction
-- `/predict/toxicity` - General Toxicity Prediction
-- `/predict/ace2` - ACE2 Binding Prediction
-
-### Molecular Docking
-- `/docking/run` - Run molecular docking simulation
-- `/docking/status/:jobId` - Check docking job status
-- `/docking/results/:jobId` - Get docking results
-
-### Target Identification
-- `/target/identify` - Identify potential protein targets
-- `/target/list` - List available targets
-- `/target/:id` - Get target details
-
-## Setup Instructions
-
-1. Install Python dependencies:
-```bash
-pip install -r requirements.txt
+```
+backendML/
+├── app.py                           # Main Flask application
+├── requirements.txt                 # Python dependencies
+├── ADMET Properties/               # ADMET prediction models
+├── Drug Target Binding Score/      # Binding affinity models
+├── Molecular Docking/              # Docking simulation tools
+└── Target Identification/          # Target prediction models
 ```
 
-2. Start the Flask API server:
+### 🔗 API Endpoints
+
+- **Health Check**: `GET /health`
+- **Predictions**: `POST /predict/{tool_name}`
+
+See main README.md for complete API documentation.
+
+### 🚀 Quick Start
+
 ```bash
+# Setup environment
+python3 -m venv venv
+source venv/bin/activate
+
+# Install dependencies  
+pip install -r requirements.txt
+
+# Start server
 python app.py
 ```
 
-3. The API will be available at `http://localhost:5001`
+### 📦 Dependencies
 
-## Model Files
+- **Flask**: Web framework
+- **Flask-CORS**: Cross-origin resource sharing
+- **RDKit**: Chemical informatics (for SMILES validation)
+- **Scikit-learn**: Machine learning models
+- **NumPy/Pandas**: Data processing
 
-Place trained model files (.pkl, .h5, .joblib) in their respective directories:
-- `ADMET Properties/models/`
-- `Drug Target Binding Score/models/`
-- `Molecular Docking/models/`
-- `Target Identification/models/`
-
-## Environment Variables
-
-Create a `.env` file with:
-```
-FLASK_ENV=development
-MODEL_PATH=/path/to/models
-RDKIT_PATH=/path/to/rdkit
-```
+For detailed setup instructions, see the main [README.md](../README.md) in the project root.
