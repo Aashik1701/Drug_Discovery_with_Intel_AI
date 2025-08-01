@@ -1,84 +1,149 @@
 # DrugForge: AI-Driven Drug Discovery Platform
 
-DrugForge is an AI-powered platform designed to revolutionize drug discovery by leveraging machine learning models and computational simulations. The platform accelerates the identification of potential drug candidates, predicting key properties and ensuring safety, efficacy, and rapid development.
+DrugForge is an advanced AI-powered platform designed to revolutionize drug discovery by leveraging machine learning models and computational simulations. The platform accelerates the identification of potential drug candidates, predicting key properties and ensuring safety, efficacy, and rapid development.
 
-## Table of Contents:
+## 🚀 Live Features
 
-Features
+### ✅ Fully Implemented Prediction Tools
+- **Blood-Brain Barrier (BBB) Penetration**: Predicts if compounds can cross the BBB for CNS drugs
+- **CYP3A4 Interaction**: Evaluates drug-drug interaction risks 
+- **Half-Life Prediction**: Predicts excretion rates for dosing optimization
+- **COX2 Inhibition**: Screens for anti-inflammatory activity
+- **HEPG2 Toxicity**: Assesses hepatotoxicity risks
+- **ACE2 Binding**: Predicts binding to ACE2 receptor
+- **Solubility Prediction**: Determines compound solubility for bioavailability
+- **General Toxicity**: Multi-endpoint toxicity screening
 
-Installation
+### ✅ Platform Features
+- **Modern React.js Interface**: Responsive, dark/light theme support
+- **Real-time Predictions**: Fast ML model inference via REST API
+- **SMILES Validation**: Chemical structure validation and error handling
+- **Interactive Results**: Detailed prediction results with interpretations
+- **Optimized Performance**: Lazy loading, code splitting, and caching
 
-Usage
+## 🏗️ Architecture
 
-Contributing
+### Frontend (React.js)
+- **Shared Components**: Reusable UI components for consistency
+- **Custom Hooks**: `usePrediction` hook for standardized API calls
+- **Theme System**: Comprehensive dark/light mode with utility functions
+- **Service Layer**: Centralized API communication
 
-License
+### Backend (Flask + ML)
+- **RESTful API**: Clean endpoints for each prediction model
+- **Model Management**: Automated model loading and caching
+- **Error Handling**: Comprehensive validation and error responses
+- **Health Monitoring**: System status and model availability checks
 
-### Features;
+## 📊 Prediction Endpoints
 
+| Tool | Endpoint | Input | Output |
+|------|----------|-------|--------|
+| BBB Penetration | `/predict/bbbp` | SMILES | Binary classification + probability |
+| CYP3A4 | `/predict/cyp3a4` | SMILES | Interaction prediction |
+| Half-Life | `/predict/half-life` | SMILES | Time in hours |
+| COX2 | `/predict/cox2` | SMILES | Inhibition prediction |
+| HEPG2 | `/predict/hepg2` | SMILES | Toxicity classification |
+| ACE2 | `/predict/ace2` | SMILES | Binding prediction |
+| Solubility | `/predict/solubility` | SMILES | LogS value |
+| Toxicity | `/predict/toxicity` | SMILES | Safety assessment |
 
-1]CYP P450 3A4 Inhibition Prediction: Evaluates drug-drug interaction risks by predicting how compounds affect the CYP3A4 enzyme.
-
-2]Half-Life Prediction: Predicts the excretion rate of a compound, informing dosing regimens.
-
-3]hERG Toxicity Prediction: Screens compounds for potential cardiotoxicity by predicting their interaction with hERG potassium ion channels.
-
-4]Solubility Prediction: Determines the solubility of compounds, which is crucial for bioavailability.
-
-5]Blood-Brain Barrier (BBB) Permeability Prediction: Assesses whether a compound can cross the BBB, critical for drugs targeting the central nervous system.
-
-6]Target Activity Prediction: Provides insights into how compounds interact with biological targets like enzymes or receptors.
-
-7]Molecular Docking: Simulates drug-target interactions, predicting binding affinity and optimizing molecular structures.
-
-8]Polypharmacology Prediction: Identifies multi-target interactions and repurposing potential of drug candidates.
-
-
-
-### Installation;
-
-Clone the Repository:
-
-bash
-Copy code
+### 1. Frontend Setup
+```bash
+# Clone the repository
 git clone https://github.com/your-username/DrugForge.git
-cd DrugForge
-Create Virtual Environment (Optional):
+cd Drug_Discovery_with_Intel_AI
 
-bash
-Copy code
+# Install dependencies
+npm install
+
+# Start development server
+npm start
+```
+
+### 2. Backend Setup
+```bash
+# Navigate to backend directory
+cd backendML
+
+# Create virtual environment
 python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-Install Dependencies:
+source venv/bin/activate  # Windows: venv\Scripts\activate
 
-bash
-Copy code
+# Install dependencies
 pip install -r requirements.txt
-Run the Application:
 
-bash
-Copy code
+# Start API server
 python app.py
+```
 
+### 3. Access Application
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:5001
+- **Health Check**: http://localhost:5001/health
 
-### Usage
-Upload Molecular Data: Users can upload molecular structures in SMILES or PDB format.
+## 💡 Usage
 
-Select a Feature: Choose from various prediction features like CYP3A4 Inhibition, Solubility, or hERG Toxicity.
+### Making Predictions
+1. **Navigate** to any prediction tool (e.g., BBB Penetration)
+2. **Enter** a valid SMILES string (e.g., `CC(=O)OC1=CC=CC=C1C(=O)O`)
+3. **Click** Predict to get instant results
+4. **View** detailed predictions with probabilities and interpretations
 
-Visualize Results: The results, such as drug-target interaction scores and toxicity predictions, are displayed in an easy-to-understand interface.
-Contributing
+### Example SMILES Strings
+- **Aspirin**: `CC(=O)OC1=CC=CC=C1C(=O)O`
+- **Caffeine**: `CN1C=NC2=C1C(=O)N(C(=O)N2C)C`
+- **Ibuprofen**: `CC(C)CC1=CC=C(C=C1)C(C)C(=O)O`
 
+### API Usage
+```javascript
+// Direct API call
+const response = await fetch('http://localhost:5001/predict/bbbp', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ smiles: 'CC(=O)OC1=CC=CC=C1C(=O)O' })
+});
+const result = await response.json();
+```
 
-We welcome contributions to DrugForge! To contribute:
+## 🧪 Development
 
-Fork the repository.
+### Code Quality Features
+- **Shared Components**: Standardized UI components
+- **Custom Hooks**: Reusable prediction logic
+- **Theme Utilities**: Consistent styling functions
+- **SMILES Validation**: Chemical structure validation
+- **Error Handling**: Comprehensive error management
 
-Create a new branch (git checkout -b feature-branch).
+### Adding New Models
+1. **Backend**: Add endpoint in `backendML/app.py`
+2. **Service**: Add function in `src/services/api.js`
+3. **Component**: Create using shared components
+4. **Routing**: Add route in `src/App.jsx`
 
-Make changes and commit them (git commit -m 'Add new feature').
+## 🚀 Contributing
 
-Push to your branch (git push origin feature-branch).
+We welcome contributions! Please:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+- **Documentation**: See [SETUP_GUIDE.md](SETUP_GUIDE.md) for detailed setup
+- **Issues**: Report bugs or request features via GitHub Issues
+- **API Docs**: Visit http://localhost:5001/health for endpoint status
+
+---
+
+**Built with ❤️ for the drug discovery community**
 
 Open a pull request.
 
