@@ -2,17 +2,44 @@
 
 DrugForge is an advanced AI-powered platform designed to revolutionize drug discovery by leveraging machine learning models and computational simulations. The platform accelerates the identification of potential drug candidates, predicting key properties and ensuring safety, efficacy, and rapid development.
 
-## 🚀 Live Features
+## 🏗️ Technical Architecture
 
-### ✅ Fully Implemented Prediction Tools
-- **Blood-Brain Barrier (BBB) Penetration**: Predicts if compounds can cross the BBB for CNS drugs
-- **CYP3A4 Interaction**: Evaluates drug-drug interaction risks 
-- **Half-Life Prediction**: Predicts excretion rates for dosing optimization
-- **COX2 Inhibition**: Screens for anti-inflammatory activity
-- **HEPG2 Toxicity**: Assesses hepatotoxicity risks
-- **ACE2 Binding**: Predicts binding to ACE2 receptor
-- **Solubility Prediction**: Determines compound solubility for bioavailability
-- **General Toxicity**: Multi-endpoint toxicity screening
+### Frontend Stack
+- **React 18.3.1** with lazy loading
+- **React Router v6** for navigation
+- **Tailwind CSS** for styling
+- **Shared Component Library** for consistency
+- **Custom Hooks** for state management
+
+### Backend Stack
+- **Flask** API server
+- **RDKit** for molecular processing
+- **CORS** configuration
+- **Comprehensive error handling**
+- **9 ML prediction endpoints**
+
+### Component Architecture
+```
+src/
+├── components/
+│   ├── shared/           # Reusable UI components
+│   │   ├── PredictionLayout.jsx
+│   │   ├── FormInput.jsx
+│   │   ├── LoadingSpinner.jsx
+│   │   ├── ErrorDisplay.jsx
+│   │   └── ResultDisplay.jsx
+│   └── [prediction-tools]/  # Feature components
+├── hooks/                # Custom React hooks
+├── utils/               # Helper utilities
+└── context/             # React context providers
+```
+
+### Development Infrastructure
+- **Docker** containerization
+- **Automated setup** scripts
+- **Comprehensive testing** suite
+- **Production-ready** builds
+- **Health monitoring**
 
 ### ✅ Platform Features
 - **Modern React.js Interface**: Responsive, dark/light theme support
@@ -127,6 +154,58 @@ const result = await response.json();
 
 ## 🧪 Development
 
+### Recent Architecture Improvements ✨
+- **Shared Component Library**: Consistent UI patterns with `PredictionLayout`, `FormInput`, `ErrorDisplay`, `ResultDisplay`, and `LoadingSpinner`
+- **Enhanced Error Handling**: Comprehensive validation and user feedback system
+- **SMILES Validation**: Real-time molecular structure validation using RDKit
+- **Complete API Integration**: Flask backend with 9 prediction endpoints and health monitoring
+- **Development Infrastructure**: Docker setup, automated testing, and deployment scripts
+- **Code Cleanup**: Removed 150+ lines of dead code for better maintainability
+
+### Component Development Pattern
+All prediction components follow a consistent pattern using shared components:
+
+```jsx
+import React from 'react';
+import PredictionLayout from '../shared/PredictionLayout';
+import FormInput from '../shared/FormInput';
+import ErrorDisplay from '../shared/ErrorDisplay';
+import ResultDisplay from '../shared/ResultDisplay';
+import { usePrediction } from '../../hooks/usePrediction';
+
+const YourPredictionTool = () => {
+  const {
+    smiles,
+    setSmiles,
+    result,
+    isLoading,
+    error,
+    handleSubmit
+  } = usePrediction('your-endpoint');
+
+  return (
+    <PredictionLayout
+      title="Your Prediction Tool"
+      description="Tool description here"
+    >
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <FormInput
+          label="SMILES Notation"
+          value={smiles}
+          onChange={setSmiles}
+          placeholder="Enter SMILES notation..."
+          required
+        />
+        <ErrorDisplay error={error} />
+        <ResultDisplay result={result} isLoading={isLoading} />
+      </form>
+    </PredictionLayout>
+  );
+};
+
+export default YourPredictionTool;
+```
+
 ### Code Quality Features
 - **Shared Components**: Standardized UI components
 - **Custom Hooks**: Reusable prediction logic
@@ -139,6 +218,84 @@ const result = await response.json();
 2. **Service**: Add function in `src/services/api.js`
 3. **Component**: Create using shared components
 4. **Routing**: Add route in `src/App.jsx`
+
+## 🚀 Deployment
+
+### Docker Deployment (Recommended)
+
+#### Development Environment
+```bash
+# Start with Docker Compose
+docker-compose -f docker-compose.dev.yml up -d
+
+# View logs
+docker-compose -f docker-compose.dev.yml logs -f
+```
+
+#### Production Environment
+```bash
+# Build production image
+docker build -f Dockerfile.production -t drugforge:latest .
+
+# Run production container
+docker run -d -p 3000:3000 --name drugforge-prod drugforge:latest
+```
+
+### Manual Deployment
+
+#### Frontend (Vercel/Netlify)
+```bash
+# Build for production
+npm run build
+
+# Deploy build folder
+# Upload build/ directory to your hosting service
+```
+
+#### Backend (Heroku/DigitalOcean)
+```bash
+# Navigate to backend
+cd backendML
+
+# Create production requirements
+pip freeze > requirements.txt
+
+# Deploy with Gunicorn
+gunicorn --bind 0.0.0.0:5001 app:app
+```
+
+### Environment Variables
+Create a `.env` file with:
+```env
+REACT_APP_API_URL=http://localhost:5001
+FLASK_ENV=production
+FLASK_DEBUG=False
+```
+
+## 🧪 Testing
+
+### Automated Testing
+```bash
+# Run all tests
+./test-system.sh
+
+# Frontend tests only
+npm test
+
+# Backend tests only
+cd backendML && python -m pytest
+```
+
+### Manual Testing
+```bash
+# Test API health
+curl http://localhost:5001/health
+
+# Test prediction endpoint
+curl -X POST http://localhost:5001/predict/bbbp \
+  -H "Content-Type: application/json" \
+  -d '{"smiles": "CCO"}'
+```
 
 ## 🚀 Contributing
 
