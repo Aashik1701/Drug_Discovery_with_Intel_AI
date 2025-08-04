@@ -30,7 +30,7 @@ const Header = () => {
               { path: '/features', label: 'Features' },
               { path: '/contact', label: 'Contact' },
               { path: '/pricing', label: 'Pricing' },
-              { path: '/theme-demo', label: 'Theme Demo' }
+              // { path: '/theme-demo', label: 'Theme Demo' }
             ].map((item) => (
               <li key={item.path}>
                 <Link

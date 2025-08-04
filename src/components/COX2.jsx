@@ -1,185 +1,86 @@
 import React, { useState } from "react";
-import { XCircle } from "lucide-react";
 import { useDrugForge } from '../context/DrugForgeContext';
+import { validateSmiles } from "../utils/chemUtils";
+import usePrediction from "../hooks/usePrediction";
+import PredictionLayout from "./shared/PredictionLayout";
+import FormInput from "./shared/FormInput";
+import LoadingSpinner from "./shared/LoadingSpinner";
+import ErrorDisplay from "./shared/ErrorDisplay";
+import ResultDisplay from "./shared/ResultDisplay";
 
 const COX2 = () => {
   const { isDarkMode } = useDrugForge();
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ smiles: "" });
-  const [prediction, setPrediction] = useState({
-    predictedClass: null,
-    predictedProbability: null,
+  
+  // SMILES validation function
+  const validateInput = (data) => {
+    const validation = validateSmiles(data.smiles);
+    return validation.valid ? null : validation.error;
+  };
+  
+  // Result formatting function
+  const formatResult = (data) => ({
+    predictedClass: data["Predicted Class"] || data.prediction,
+    predictedProbability: data["Predicted Probability"] || data.confidence,
+    interpretation: data.prediction === 1 || data["Predicted Class"] === 1
+      ? "This compound shows selectivity for COX-2 enzyme, which may indicate potential as an anti-inflammatory drug with reduced gastrointestinal side effects."
+      : "This compound shows low selectivity for COX-2 enzyme."
   });
-  const [showResult, setShowResult] = useState(false);
-  const [error, setError] = useState(null);
+  
+  const { isLoading, result, error, showResult, predict } = usePrediction(
+    "http://localhost:5001/predict/cox2",
+    validateInput,
+    formatResult
+  );
 
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handlePredictClick = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-    setShowResult(false);
-
-    try {
-      const response = await fetch("http://localhost:5001/predict", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to fetch prediction");
-      }
-
-      const data = await response.json();
-      setPrediction({
-        predictedClass: data["Predicted Class"],
-        predictedProbability: data["Predicted Probability for Class 1"],
-      });
-      setShowResult(true);
-    } catch (error) {
-      console.error("Error:", error);
-      setError("An error occurred while fetching the prediction. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+    await predict(formData);
   };
 
-  return (
-    <div className={`flex items-center justify-center min-h-screen p-5 transition-colors duration-200 ${
-      isDarkMode 
-        ? 'bg-gradient-to-br from-gray-900 to-gray-800' 
-        : 'bg-gradient-to-br from-blue-200 to-blue-500'
-    }`}>
-      <div className={`w-full max-w-md p-6 rounded-lg shadow-lg transition-colors duration-200 ${
-        isDarkMode 
-          ? 'bg-gray-800 border border-gray-600' 
-          : 'bg-white'
-      }`}>
-        <h1 className={`mb-4 text-2xl font-bold text-center transition-colors duration-200 ${
-          isDarkMode ? 'text-blue-400' : 'text-blue-500'
-        }`}>COX-2 Inhibition Prediction</h1>
-        <h2 className={`mb-2 text-lg font-semibold text-center transition-colors duration-200 ${
-          isDarkMode ? 'text-gray-200' : 'text-gray-800'
-        }`}>Cyclooxygenase-2</h2>
-        
-        <div className={`p-4 mb-6 border rounded-md transition-colors duration-200 ${
-          isDarkMode 
-            ? 'bg-blue-900/20 border-blue-700' 
-            : 'bg-blue-50 border-blue-100'
-        }`}>
-          <p className={`mb-2 text-sm transition-colors duration-200 ${
-            isDarkMode ? 'text-gray-300' : 'text-gray-700'
-          }`}>
-            COX-2 is an enzyme responsible for inflammation and pain. COX-2 inhibitors are a type of non-steroidal anti-inflammatory drug (NSAID) that selectively blocks COX-2 enzymes.
-          </p>
-          <p className={`text-sm transition-colors duration-200 ${
-            isDarkMode ? 'text-gray-300' : 'text-gray-700'
-          }`}>
-            This tool predicts whether a compound will inhibit COX-2, which is useful for developing potential anti-inflammatory drugs with fewer side effects.
-          </p>
-        </div>
-        
-        <form onSubmit={handlePredictClick} className="flex flex-col gap-5">
-          <div>
-            <label className={`block mb-2 font-semibold transition-colors duration-200 ${
-              isDarkMode ? 'text-gray-200' : 'text-gray-800'
-            }`} htmlFor="smiles">
-              Enter SMILES String:
-            </label>
-            <input
-              type="text"
-              id="smiles"
-              name="smiles"
-              value={formData.smiles}
-              onChange={handleChange}
-              placeholder="e.g., CC(=O)OC1=CC=CC=C1C(=O)O"
-              className={`w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-200 ${
-                isDarkMode 
-                  ? 'bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400' 
-                  : 'bg-white border-gray-300 text-gray-700'
-              }`}
-              required
-            />
-          </div>
-          
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full py-2 text-white font-semibold rounded-md transition-colors ${
-              isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
-            }`}
-          >
-            {isLoading ? "Predicting..." : "Predict COX-2 Inhibition"}
-          </button>
-        </form>
+  const description = "COX-2 (Cyclooxygenase-2) selectivity is important for developing anti-inflammatory drugs with reduced side effects. This tool predicts whether a compound will selectively inhibit COX-2 over COX-1, which is crucial for minimizing gastrointestinal toxicity while maintaining anti-inflammatory activity.";
 
-        {error && (
-          <div className={`flex items-start p-4 mt-6 border rounded-md transition-colors duration-200 ${
-            isDarkMode 
-              ? 'bg-red-900/20 border-red-600' 
-              : 'bg-orange-100 border-orange-400'
-          }`}>
-            <XCircle className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${
-              isDarkMode ? 'text-red-400' : 'text-orange-500'
-            }`} />
-            <div>
-              <h3 className={`font-semibold ${
-                isDarkMode ? 'text-red-400' : 'text-orange-500'
-              }`}>Error</h3>
-              <p className={isDarkMode ? 'text-red-300' : 'text-orange-700'}>{error}</p>
-            </div>
-          </div>
-        )}
+  return (
+    <PredictionLayout 
+      title="COX-2 Selectivity Prediction" 
+      description={description}
+      isDarkMode={isDarkMode}
+    >
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <FormInput
+          label="Enter SMILES String"
+          type="text"
+          id="smiles"
+          name="smiles"
+          value={formData.smiles}
+          onChange={handleChange}
+          placeholder="e.g., CC(C)CC1=CC=C(C=C1)C(C)C(=O)O"
+          required
+          isDarkMode={isDarkMode}
+        />
         
-        {showResult && (
-          <div className={`p-4 mt-6 border rounded-md transition-colors duration-200 ${
-            isDarkMode 
-              ? 'bg-gray-700 border-gray-600' 
-              : 'bg-gray-50 border-gray-200'
-          }`}>
-            <h2 className={`mb-2 text-lg font-semibold transition-colors duration-200 ${
-              isDarkMode ? 'text-gray-200' : 'text-gray-800'
-            }`}>Prediction Result:</h2>
-            <div className="space-y-2">
-              <p className={`transition-colors duration-200 ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-700'
-              }`}>
-                <span className="font-semibold">Predicted Class:</span>{" "}
-                {prediction.predictedClass}
-              </p>
-              <p className={`transition-colors duration-200 ${
-                isDarkMode ? 'text-gray-300' : 'text-gray-700'
-              }`}>
-                <span className="font-semibold">Probability:</span>{" "}
-                {prediction.predictedProbability !== null
-                  ? prediction.predictedProbability.toFixed(4)
-                  : "N/A"}
-              </p>
-              <p className={`mt-2 p-2 border-l-4 rounded transition-colors duration-200 ${
-                prediction.predictedClass === 1 
-                  ? isDarkMode 
-                    ? "bg-green-900/20 border-green-500 text-gray-300" 
-                    : "bg-green-50 border-green-500 text-gray-700"
-                  : isDarkMode
-                    ? "bg-gray-800 border-gray-500 text-gray-300"
-                    : "bg-gray-100 border-gray-500 text-gray-700"
-              }`}>
-                {prediction.predictedClass === 1
-                  ? "This compound is predicted to inhibit COX-2 and may have anti-inflammatory properties."
-                  : "This compound is predicted not to inhibit COX-2."}
-              </p>
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className={`w-full py-2 text-white font-semibold rounded-md transition-colors ${
+            isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
+          }`}
+        >
+          {isLoading ? "Predicting..." : "Predict COX-2 Selectivity"}
+        </button>
+      </form>
+
+      {isLoading && <LoadingSpinner isDarkMode={isDarkMode} message="Analyzing COX-2 selectivity..." />}
+      
+      {error && <ErrorDisplay error={error} isDarkMode={isDarkMode} />}
+      
+      {showResult && result && <ResultDisplay result={result} isDarkMode={isDarkMode} />}
+    </PredictionLayout>
   );
 };
 
