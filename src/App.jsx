@@ -52,6 +52,13 @@ const ACE2 = lazy(() => import('./components/ACE2.jsx'));
 const Toxicity = lazy(() => import('./components/Toxicity.jsx'));
 const VirtualScreening = lazy(() => import('./components/VirtualScreening.jsx'));
 
+// Advanced Analytics Components
+const MLAnalytics = lazy(() => import('./components/MLAnalytics.jsx'));
+const RDKitMolecularVisualization = lazy(() => import('./components/RDKitMolecularVisualization.jsx'));
+const BatchPrediction = lazy(() => import('./components/BatchPrediction.jsx'));
+const WorkflowBuilder = lazy(() => import('./components/WorkflowBuilder.jsx'));
+const QSARModeling = lazy(() => import('./components/QSARModeling.jsx'));
+
 const App = () => {
   return (
     <ErrorBoundary>
@@ -89,6 +96,13 @@ const App = () => {
                     <Route path="/ace2" element={<ACE2 />} />
                     <Route path="/toxicity" element={<Toxicity />} />
                     <Route path="/virtual-screening" element={<VirtualScreening />} />
+                    
+                    {/* Advanced Analytics Tools */}
+                    <Route path="/ml-analytics" element={<MLAnalytics />} />
+                    <Route path="/molecular-visualization" element={<RDKitMolecularVisualization />} />
+                    <Route path="/batch-prediction" element={<BatchPrediction />} />
+                    <Route path="/workflow-builder" element={<WorkflowBuilder />} />
+                    <Route path="/qsar-modeling" element={<QSARModeling />} />
 
 
                     {/* Not Found Page */}

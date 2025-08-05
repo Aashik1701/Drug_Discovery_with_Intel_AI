@@ -91,6 +91,87 @@ function Dashboard() {
             ))}
           </ul>
         </section>
+
+        {/* Advanced Analytics Tools */}
+        <section className="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-900/30">
+          <h2 className="mb-4 text-xl font-semibold text-gray-800 dark:text-gray-100">Advanced Analytics & ML Tools</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <a 
+              href="/ml-analytics"
+              className="p-4 border rounded-lg hover:border-blue-500 transition-colors bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border-blue-200 dark:border-blue-700"
+            >
+              <div className="flex items-center mb-2">
+                <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+                  <span className="text-white text-sm font-bold">ML</span>
+                </div>
+                <h3 className="font-semibold text-gray-800 dark:text-gray-200">ML Analytics</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Advanced machine learning insights, pattern recognition, and predictive analytics
+              </p>
+            </a>
+
+            <a 
+              href="/qsar-modeling"
+              className="p-4 border rounded-lg hover:border-indigo-500 transition-colors bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border-indigo-200 dark:border-indigo-700"
+            >
+              <div className="flex items-center mb-2">
+                <div className="w-8 h-8 bg-indigo-500 rounded-lg flex items-center justify-center mr-3">
+                  <span className="text-white text-sm font-bold">QS</span>
+                </div>
+                <h3 className="font-semibold text-gray-800 dark:text-gray-200">QSAR Modeling</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Build quantitative structure-activity relationship models with ML
+              </p>
+            </a>
+
+            <a 
+              href="/molecular-visualization"
+              className="p-4 border rounded-lg hover:border-green-500 transition-colors bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-700"
+            >
+              <div className="flex items-center mb-2">
+                <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center mr-3">
+                  <span className="text-white text-sm font-bold">3D</span>
+                </div>
+                <h3 className="font-semibold text-gray-800 dark:text-gray-200">Molecular Visualization</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Real RDKit-powered molecular structure rendering and chemical informatics
+              </p>
+            </a>
+
+            <a 
+              href="/batch-prediction"
+              className="p-4 border rounded-lg hover:border-purple-500 transition-colors bg-gradient-to-r from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 border-purple-200 dark:border-purple-700"
+            >
+              <div className="flex items-center mb-2">
+                <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center mr-3">
+                  <span className="text-white text-sm font-bold">⚡</span>
+                </div>
+                <h3 className="font-semibold text-gray-800 dark:text-gray-200">Batch Processing</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                High-throughput batch prediction for multiple compounds simultaneously
+              </p>
+            </a>
+
+            <a 
+              href="/workflow-builder"
+              className="p-4 border rounded-lg hover:border-orange-500 transition-colors bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border-orange-200 dark:border-orange-700"
+            >
+              <div className="flex items-center mb-2">
+                <div className="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center mr-3">
+                  <span className="text-white text-sm font-bold">🔧</span>
+                </div>
+                <h3 className="font-semibold text-gray-800 dark:text-gray-200">Workflow Builder</h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Visual pipeline creation for chaining multiple prediction steps
+              </p>
+            </a>
+          </div>
+        </section>
       </div>
     </div>
   );
