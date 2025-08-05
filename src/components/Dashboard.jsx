@@ -137,7 +137,7 @@ function Dashboard() {
                 <h3 className="font-semibold text-gray-800 dark:text-gray-200">Molecular Visualization</h3>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400">
-                Real RDKit-powered molecular structure rendering and chemical informatics
+                Interactive SMILES input and RDKit-powered molecular rendering
               </p>
             </a>
 

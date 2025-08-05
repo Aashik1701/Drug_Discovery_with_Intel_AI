@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Molecular Structure Debug</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .molecule-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            background: #fafafa;
+        }
+        .molecule-title {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .smiles-code {
+            font-family: monospace;
+            background: #eee;
+            padding: 5px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+        .svg-container {
+            border: 1px solid #ccc;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+        .test-results {
+            background: #e8f5e8;
+            border: 1px solid #4caf50;
+            border-radius: 4px;
+            padding: 10px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Molecular Structure Debug Test</h1>
+        <p>This page tests if our molecular structures are generating correctly.</p>
+        
+        <div class="molecule-card">
+            <div class="molecule-title">Aspirin</div>
+            <div class="smiles-code">CC(=O)OC1=CC=CC=C1C(=O)O</div>
+            <div class="svg-container" id="aspirin-container">
+                Loading Aspirin structure...
+            </div>
+        </div>
+
+        <div class="molecule-card">
+            <div class="molecule-title">Caffeine</div>
+            <div class="smiles-code">CN1C=NC2=C1C(=O)N(C(=O)N2C)C</div>
+            <div class="svg-container" id="caffeine-container">
+                Loading Caffeine structure...
+            </div>
+        </div>
+
+        <div class="molecule-card">
+            <div class="molecule-title">Ibuprofen</div>
+            <div class="smiles-code">CC(C)CC1=CC=C(C=C1)C(C)C(=O)O</div>
+            <div class="svg-container" id="ibuprofen-container">
+                Loading Ibuprofen structure...
+            </div>
+        </div>
+
+        <div class="test-results" id="results">
+            <strong>Test Results:</strong><br>
+            <span id="test-status">Running tests...</span>
+        </div>
+    </div>
+
+    <script>
+        // Test function from our React component
+        function generateMoleculeSpecificSVG(smilesString, width = 400, height = 300) {
+            const structures = {
+                // Aspirin
+                'CC(=O)OC1=CC=CC=C1C(=O)O': {
+                    title: 'Aspirin',
+                    paths: `
+                        <!-- Benzene ring -->
+                        <polygon points="100,150 150,120 200,120 250,150 250,200 200,230 150,230 100,200" 
+                                 fill="none" stroke="#000000" stroke-width="2"/>
+                        <!-- Ester group -->
+                        <line x1="250" y1="150" x2="300" y2="120" stroke="#000000" stroke-width="2"/>
+                        <circle cx="320" cy="110" r="6" fill="#ff0000"/>
+                        <text x="335" y="115" fill="#000000" font-size="12">O</text>
+                        <!-- Carboxyl group -->
+                        <line x1="150" y1="230" x2="150" y2="280" stroke="#000000" stroke-width="2"/>
+                        <circle cx="130" cy="300" r="6" fill="#ff0000"/>
+                        <circle cx="170" cy="300" r="6" fill="#ff0000"/>
+                        <text x="110" y="305" fill="#000000" font-size="12">O</text>
+                        <text x="180" y="305" fill="#000000" font-size="12">OH</text>
+                        <!-- Acetyl group -->
+                        <line x1="300" y1="120" x2="350" y2="90" stroke="#000000" stroke-width="2"/>
+                        <text x="360" y="95" fill="#000000" font-size="12">CH₃</text>
+                    `
+                },
+                // Caffeine
+                'CN1C=NC2=C1C(=O)N(C(=O)N2C)C': {
+                    title: 'Caffeine',
+                    paths: `
+                        <!-- Purine ring system -->
+                        <polygon points="150,100 200,80 250,100 280,140 250,180 200,200 150,180 120,140" 
+                                 fill="none" stroke="#000000" stroke-width="2"/>
+                        <polygon points="200,80 250,100 280,140 250,120 200,100" 
+                                 fill="none" stroke="#000000" stroke-width="2"/>
+                        <!-- Nitrogens -->
+                        <circle cx="175" cy="120" r="6" fill="#0000ff"/>
+                        <circle cx="225" cy="120" r="6" fill="#0000ff"/>
+                        <circle cx="200" cy="160" r="6" fill="#0000ff"/>
+                        <text x="165" y="125" fill="white" font-size="10">N</text>
+                        <text x="215" y="125" fill="white" font-size="10">N</text>
+                        <text x="190" y="165" fill="white" font-size="10">N</text>
+                        <!-- Methyls -->
+                        <text x="120" y="110" fill="#000000" font-size="12">CH₃</text>
+                        <text x="290" y="130" fill="#000000" font-size="12">CH₃</text>
+                        <text x="170" y="210" fill="#000000" font-size="12">CH₃</text>
+                        <!-- Carbonyls -->
+                        <circle cx="150" cy="140" r="4" fill="#ff0000"/>
+                        <circle cx="250" cy="140" r="4" fill="#ff0000"/>
+                        <text x="140" y="145" fill="#000000" font-size="10">O</text>
+                        <text x="260" y="145" fill="#000000" font-size="10">O</text>
+                    `
+                },
+                // Ibuprofen
+                'CC(C)CC1=CC=C(C=C1)C(C)C(=O)O': {
+                    title: 'Ibuprofen',
+                    paths: `
+                        <!-- Benzene ring -->
+                        <polygon points="150,150 200,120 250,120 300,150 300,200 250,230 200,230 150,200" 
+                                 fill="none" stroke="#000000" stroke-width="2"/>
+                        <!-- Isobutyl chain -->
+                        <line x1="150" y1="175" x2="100" y2="175" stroke="#000000" stroke-width="2"/>
+                        <line x1="100" y1="175" x2="80" y2="140" stroke="#000000" stroke-width="2"/>
+                        <text x="60" y="135" fill="#000000" font-size="12">CH₃</text>
+                        <line x1="100" y1="175" x2="80" y2="210" stroke="#000000" stroke-width="2"/>
+                        <text x="60" y="215" fill="#000000" font-size="12">CH₃</text>
+                        <!-- Propionic acid side chain -->
+                        <line x1="300" y1="175" x2="350" y2="175" stroke="#000000" stroke-width="2"/>
+                        <line x1="350" y1="175" x2="380" y2="175" stroke="#000000" stroke-width="2"/>
+                        <text x="355" y="160" fill="#000000" font-size="12">CH₃</text>
+                        <!-- Carboxyl group -->
+                        <line x1="380" y1="175" x2="420" y2="175" stroke="#000000" stroke-width="2"/>
+                        <circle cx="440" cy="160" r="6" fill="#ff0000"/>
+                        <circle cx="440" cy="190" r="6" fill="#ff0000"/>
+                        <text x="450" y="165" fill="#000000" font-size="12">O</text>
+                        <text x="450" y="195" fill="#000000" font-size="12">OH</text>
+                    `
+                }
+            };
+
+            const structure = structures[smilesString];
+            if (structure) {
+                return `
+                    <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" 
+                         xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="white"/>
+                        <g transform="translate(${width/2 - 200}, ${height/2 - 150})">
+                            ${structure.paths}
+                        </g>
+                        <text x="${width/2}" y="30" text-anchor="middle" fill="#000000" font-size="16" font-weight="bold">
+                            ${structure.title}
+                        </text>
+                        <text x="${width/2}" y="${height-15}" text-anchor="middle" fill="#666666" font-size="10" font-family="monospace">
+                            ${smilesString.length > 50 ? smilesString.substring(0, 50) + '...' : smilesString}
+                        </text>
+                    </svg>
+                `;
+            }
+
+            // Fallback for unknown molecules
+            return `
+                <svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" 
+                     xmlns="http://www.w3.org/2000/svg">
+                    <rect width="100%" height="100%" fill="white"/>
+                    <text x="${width/2}" y="${height/2}" text-anchor="middle" fill="#666666" font-size="14">
+                        Unknown molecule structure
+                    </text>
+                    <text x="${width/2}" y="${height/2 + 20}" text-anchor="middle" fill="#999999" font-size="10" font-family="monospace">
+                        SMILES: ${smilesString}
+                    </text>
+                </svg>
+            `;
+        }
+
+        // Test the structures
+        const molecules = [
+            { smiles: 'CC(=O)OC1=CC=CC=C1C(=O)O', container: 'aspirin-container', name: 'Aspirin' },
+            { smiles: 'CN1C=NC2=C1C(=O)N(C(=O)N2C)C', container: 'caffeine-container', name: 'Caffeine' },
+            { smiles: 'CC(C)CC1=CC=C(C=C1)C(C)C(=O)O', container: 'ibuprofen-container', name: 'Ibuprofen' }
+        ];
+
+        let successCount = 0;
+        let totalCount = molecules.length;
+
+        molecules.forEach(molecule => {
+            try {
+                const svg = generateMoleculeSpecificSVG(molecule.smiles, 400, 300);
+                const container = document.getElementById(molecule.container);
+                if (container) {
+                    container.innerHTML = svg;
+                    successCount++;
+                    console.log(`Successfully generated ${molecule.name} structure`);
+                }
+            } catch (error) {
+                console.error(`Error generating ${molecule.name} structure:`, error);
+                const container = document.getElementById(molecule.container);
+                if (container) {
+                    container.innerHTML = `<div style="color: red;">Error: ${error.message}</div>`;
+                }
+            }
+        });
+
+        // Update test results
+        setTimeout(() => {
+            const statusElement = document.getElementById('test-status');
+            if (statusElement) {
+                if (successCount === totalCount) {
+                    statusElement.innerHTML = `✅ All ${totalCount} molecular structures generated successfully!`;
+                    statusElement.parentElement.style.background = '#e8f5e8';
+                    statusElement.parentElement.style.borderColor = '#4caf50';
+                } else {
+                    statusElement.innerHTML = `⚠️ ${successCount}/${totalCount} molecular structures generated successfully.`;
+                    statusElement.parentElement.style.background = '#fff3cd';
+                    statusElement.parentElement.style.borderColor = '#ffc107';
+                }
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

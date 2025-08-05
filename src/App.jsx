@@ -54,7 +54,9 @@ const VirtualScreening = lazy(() => import('./components/VirtualScreening.jsx'))
 
 // Advanced Analytics Components
 const MLAnalytics = lazy(() => import('./components/MLAnalytics.jsx'));
-const RDKitMolecularVisualization = lazy(() => import('./components/RDKitMolecularVisualization.jsx'));
+const MolecularVisualizationPage = lazy(() => import('./components/MolecularVisualizationPage.jsx'));
+const MolecularVisualizationTest = lazy(() => import('./components/MolecularVisualizationTest.jsx'));
+const SimpleMolecularTest = lazy(() => import('./components/SimpleMolecularTest.jsx'));
 const BatchPrediction = lazy(() => import('./components/BatchPrediction.jsx'));
 const WorkflowBuilder = lazy(() => import('./components/WorkflowBuilder.jsx'));
 const QSARModeling = lazy(() => import('./components/QSARModeling.jsx'));
@@ -99,7 +101,9 @@ const App = () => {
                     
                     {/* Advanced Analytics Tools */}
                     <Route path="/ml-analytics" element={<MLAnalytics />} />
-                    <Route path="/molecular-visualization" element={<RDKitMolecularVisualization />} />
+                    <Route path="/molecular-visualization" element={<MolecularVisualizationPage />} />
+                    <Route path="/molecular-test" element={<MolecularVisualizationTest />} />
+                    <Route path="/simple-test" element={<SimpleMolecularTest />} />
                     <Route path="/batch-prediction" element={<BatchPrediction />} />
                     <Route path="/workflow-builder" element={<WorkflowBuilder />} />
                     <Route path="/qsar-modeling" element={<QSARModeling />} />

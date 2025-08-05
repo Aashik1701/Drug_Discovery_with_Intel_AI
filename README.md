@@ -282,7 +282,6 @@ curl -X POST http://localhost:5001/predict/cyp3a4 \
 ### 🧪 Sample SMILES for Testing
 
 - **Ethanol**: `CCO`
-- **Aspirin**: `CC(=O)OC1=CC=CC=C1C(=O)O`
 - **Caffeine**: `CN1C=NC2=C1C(=O)N(C(=O)N2C)C`
 - **Ibuprofen**: `CC(C)CC1=CC=C(C=C1)C(C)C(=O)O`
 
