@@ -3,6 +3,7 @@ import { Beaker, Eye, RotateCcw, Info } from 'lucide-react';
 import { useDrugForge } from '../context/DrugForgeContext';
 import { getTextClasses, getBackgroundClasses } from '../utils/themeUtils';
 import RDKitMolecularVisualization from './RDKitMolecularVisualization';
+import DirectSVGTest from './DirectSVGTest';
 
 /**
  * Interactive Molecular Visualization Page
@@ -219,6 +220,11 @@ const MolecularVisualizationPage = () => {
                     width={500}
                     height={400}
                   />
+
+                  {/* Debug: Direct SVG Test */}
+                  <div className="mt-6">
+                    <DirectSVGTest smiles={currentSmiles} />
+                  </div>
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-12">
