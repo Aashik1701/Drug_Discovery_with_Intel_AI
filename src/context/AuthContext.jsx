@@ -1,103 +1,131 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { authService } from '../services/api';
+import React, { createContext, useState, useEffect, useContext, useCallback } from 'react';
 
 // Create the auth context
 const AuthContext = createContext();
 
-// Auth Provider component
+// Auth Provider component — localStorage-based (no backend auth endpoints needed)
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Check if user is logged in on mount
+  // Restore user from localStorage on mount
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (token) {
-          const response = await authService.getProfile();
-          setUser(response.data);
-        }
-      } catch (err) {
-        // Expected when auth is not configured or token is stale
-        console.debug('Auth check:', err?.response?.status === 401 ? 'not authenticated' : err.message);
-        localStorage.removeItem('token');
-      } finally {
-        setLoading(false);
+    try {
+      const token = localStorage.getItem('authToken');
+      const storedUser = localStorage.getItem('user');
+      if (token && storedUser) {
+        setUser(JSON.parse(storedUser));
       }
-    };
-
-    checkAuth();
+    } catch (err) {
+      console.debug('Auth restore failed:', err.message);
+      localStorage.removeItem('authToken');
+      localStorage.removeItem('user');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  // Login function
-  const login = async (credentials) => {
+  // Login function (mock — validates locally)
+  const login = useCallback(async (email, password) => {
     try {
       setError(null);
       setLoading(true);
-      const response = await authService.login(credentials);
-      const { token, user } = response.data;
-      localStorage.setItem('token', token);
-      setUser(user);
-      return { success: true };
-    } catch (err) {
-      const message = err.response?.data?.message || 'Login failed';
-      setError(message);
-      return { success: false, message };
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  // Register function
-  const register = async (userData) => {
-    try {
-      setError(null);
-      setLoading(true);
-      const response = await authService.register(userData);
-      const { token, user } = response.data;
-      localStorage.setItem('token', token);
-      setUser(user);
-      return { success: true };
+      if (!email || !email.includes('@')) {
+        throw new Error('Please enter a valid email address');
+      }
+      if (!password || password.length < 6) {
+        throw new Error('Password must be at least 6 characters');
+      }
+
+      // Simulate brief API delay
+      await new Promise(r => setTimeout(r, 500));
+
+      const userData = {
+        id: 'user-' + Date.now(),
+        email,
+        name: email.split('@')[0],
+        role: 'user',
+        createdAt: new Date().toISOString(),
+      };
+
+      localStorage.setItem('authToken', 'mock-jwt-' + Date.now());
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
+      return { success: true, user: userData };
     } catch (err) {
-      const message = err.response?.data?.message || 'Registration failed';
+      const message = err.message || 'Login failed';
       setError(message);
       return { success: false, message };
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  // Register function (mock — validates locally)
+  const register = useCallback(async (email, password, name) => {
+    try {
+      setError(null);
+      setLoading(true);
+
+      if (!email || !email.includes('@')) {
+        throw new Error('Please enter a valid email address');
+      }
+      if (!password || password.length < 6) {
+        throw new Error('Password must be at least 6 characters');
+      }
+      if (!name || name.trim().length < 2) {
+        throw new Error('Please enter your name');
+      }
+
+      await new Promise(r => setTimeout(r, 600));
+
+      const userData = {
+        id: 'user-' + Date.now(),
+        email,
+        name,
+        role: 'user',
+        createdAt: new Date().toISOString(),
+      };
+
+      localStorage.setItem('authToken', 'mock-jwt-' + Date.now());
+      localStorage.setItem('user', JSON.stringify(userData));
+      setUser(userData);
+      return { success: true, user: userData };
+    } catch (err) {
+      const message = err.message || 'Registration failed';
+      setError(message);
+      return { success: false, message };
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   // Logout function
-  const logout = async () => {
-    try {
-      await authService.logout();
-      setUser(null);
-      return { success: true };
-    } catch (err) {
-      const message = err.response?.data?.message || 'Logout failed';
-      return { success: false, message };
-    }
-  };
+  const logout = useCallback(() => {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('user');
+    setUser(null);
+    setError(null);
+  }, []);
 
-  // Update user profile
-  const updateProfile = async (profileData) => {
+  // Update profile (persists to localStorage)
+  const updateProfile = useCallback(async (profileData) => {
     try {
       setLoading(true);
-      const response = await authService.updateProfile(profileData);
-      setUser(response.data);
+      const updated = { ...user, ...profileData };
+      localStorage.setItem('user', JSON.stringify(updated));
+      setUser(updated);
       return { success: true };
     } catch (err) {
-      const message = err.response?.data?.message || 'Profile update failed';
-      setError(message);
-      return { success: false, message };
+      setError(err.message);
+      return { success: false, message: err.message };
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
-  // Value to be provided by the context
   const value = {
     user,
     loading,
@@ -107,6 +135,8 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateProfile,
     isAuthenticated: !!user,
+    isLoggedIn: !!user,         // alias for hooks/useAuth compat
+    isLoading: loading,         // alias for hooks/useAuth compat
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

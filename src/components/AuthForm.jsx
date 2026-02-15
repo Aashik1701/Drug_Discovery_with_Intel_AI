@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Navigate, Link } from 'react-router-dom';
-import { useAuth } from '../hooks';
+import { useAuth } from '../context/AuthContext';
 import ErrorBoundary from './ErrorBoundary';
 import { AlertCircle, Loader2, CheckCircle, LogIn } from 'lucide-react';
 

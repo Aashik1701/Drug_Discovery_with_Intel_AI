@@ -1,14 +1,25 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Search, Bell, Sun, Moon } from 'lucide-react';
 import { useDrugForge } from '../../context/DrugForgeContext';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../context/AuthContext';
 
 const Header = () => {
   const { state, setTheme } = useDrugForge();
   const { user } = useAuth();
+  const navigate = useNavigate();
   const isDarkMode = state.theme === 'dark';
+  const [query, setQuery] = useState('');
 
   const toggleTheme = () => setTheme(isDarkMode ? 'light' : 'dark');
+
+  const handleSearch = useCallback((e) => {
+    e.preventDefault();
+    const q = query.trim();
+    if (!q) return;
+    navigate(`/app/analyze?smiles=${encodeURIComponent(q)}`);
+    setQuery('');
+  }, [query, navigate]);
 
   // Compute user initials from auth context
   const initials = user?.name
@@ -20,16 +31,18 @@ const Header = () => {
       
       {/* Omnibox Trigger */}
       <div className="flex-1 max-w-xl">
-        <div className="relative group">
+        <form onSubmit={handleSearch} className="relative group">
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <Search className="h-5 w-5 text-slate-400 group-hover:text-bio-teal transition-colors" />
           </div>
           <input
             type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
             className="block w-full pl-10 pr-3 py-2.5 border border-white/20 rounded-xl leading-5 bg-white/10 dark:bg-black/20 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-bio-teal/50 focus:border-bio-teal/50 transition-all backdrop-blur-md shadow-sm hover:shadow-md"
-            placeholder="Search SMILES, Targets, or Projects... (Cmd+K)"
+            placeholder="Paste SMILES and press Enter... (Cmd+K)"
           />
-        </div>
+        </form>
       </div>
 
       {/* Right Actions */}
