@@ -17,7 +17,7 @@ const Chatbot = () => {
     const messagesEndRef = useRef(null);
     const apiKeyRef = useRef(import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT);
     
-    // Debug API key on component mount
+    // Validate API key on component mount
     useEffect(() => {
         const apiKey = import.meta.env.VITE_API_GENERATIVE_LANGUAGE_CLIENT;
         const isValidKey = apiKey && 
@@ -26,18 +26,13 @@ const Chatbot = () => {
                           apiKey !== 'your_gemini_api_key_here' && 
                           apiKey !== 'undefined';
         
-        console.log('Gemini API Key Status:', {
-            exists: !!apiKey,
-            length: apiKey?.length || 0,
-            startsWithAIza: apiKey?.startsWith('AIza') || false,
-            isValid: isValidKey,
-            preview: apiKey ? `${apiKey.substring(0, 10)}...${apiKey.substring(apiKey.length - 4)}` : 'none'
-        });
-        
         apiKeyRef.current = apiKey;
-        
-        // Reset API availability on mount - start optimistic
         setApiAvailable(isValidKey);
+        
+        if (!isValidKey) {
+            // Silent debug - only log in development if needed
+            console.debug('Chatbot: Running in offline/fallback mode (no valid Gemini API key configured)');
+        }
     }, []);
     
     // Auto scroll to bottom when messages change
@@ -101,7 +96,6 @@ const Chatbot = () => {
                              apiKeyRef.current !== '';
         
         if (!isValidApiKey) {
-            console.log('Gemini API key validation failed, using fallback mode');
             // Use fallback response immediately
             setTimeout(() => {
                 const fallbackResponse = getFallbackResponse(message);
@@ -120,7 +114,6 @@ const Chatbot = () => {
         }
         
         try {
-            console.log('Making API call to Google Gemini...');
             const response = await axios({
                 url: `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKeyRef.current}`,
                 method: "post",
@@ -146,7 +139,6 @@ User question: ${message}`
                 },
             });
 
-            console.log('Gemini API call successful');
             // Add bot response after API call completes
             const botResponse = response.data.candidates?.[0]?.content?.parts?.[0]?.text || "No response generated";
             setMessages(prevMessages => [

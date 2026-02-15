@@ -38,3 +38,6 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 backendML/venv
+backend/venv
+/backendML/__pycache__/
+build/

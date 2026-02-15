@@ -1,2 +1,0 @@
-import{j as e,E as r}from"./index-B3Gkql2V.js";import{A as s}from"./AuthForm-CKtnRlnp.js";import"./loader-2-C9vnTbJ6.js";const m=()=>e.jsxDEV(r,{children:e.jsxDEV(s,{mode:"register"},void 0,!1,{fileName:"/Users/aashik/Documents/Drug_Discovery_with_Intel_AI/src/pages/Register.jsx",lineNumber:12,columnNumber:7},void 0)},void 0,!1,{fileName:"/Users/aashik/Documents/Drug_Discovery_with_Intel_AI/src/pages/Register.jsx",lineNumber:11,columnNumber:5},void 0);export{m as default};
-//# sourceMappingURL=Register-DN_kj2lR.js.map
