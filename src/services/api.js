@@ -33,12 +33,16 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    const { response } = error;
+    const { response, config } = error;
     
     // Handle specific error codes
     if (response && response.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/signin';
+      // Don't redirect for auth check endpoints (AuthContext probing)
+      const isAuthCheck = config?.url?.includes('/auth/');
+      if (!isAuthCheck) {
+        localStorage.removeItem('token');
+        window.location.href = '/signin';
+      }
     }
 
     if (response && response.status === 503) {

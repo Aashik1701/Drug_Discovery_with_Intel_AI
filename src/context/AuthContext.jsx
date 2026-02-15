@@ -20,7 +20,8 @@ export const AuthProvider = ({ children }) => {
           setUser(response.data);
         }
       } catch (err) {
-        console.error('Authentication error:', err);
+        // Expected when auth is not configured or token is stale
+        console.debug('Auth check:', err?.response?.status === 401 ? 'not authenticated' : err.message);
         localStorage.removeItem('token');
       } finally {
         setLoading(false);

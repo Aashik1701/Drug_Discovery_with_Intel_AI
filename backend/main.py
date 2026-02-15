@@ -205,6 +205,37 @@ async def list_models() -> Dict[str, Dict[str, str]]:
 
 
 # ============================================================================
+# AUTH STUBS (frontend AuthContext compatibility)
+# ============================================================================
+
+@app.get("/auth/me", tags=["Auth"])
+async def auth_me():
+    """
+    Stub auth endpoint - returns 401 when no auth system is configured.
+    Prevents frontend AuthContext from throwing unhandled errors.
+    """
+    raise HTTPException(status_code=401, detail="Authentication not configured")
+
+
+@app.post("/auth/login", tags=["Auth"])
+async def auth_login():
+    """Stub login endpoint."""
+    raise HTTPException(status_code=501, detail="Authentication not implemented")
+
+
+@app.post("/auth/register", tags=["Auth"])
+async def auth_register():
+    """Stub register endpoint."""
+    raise HTTPException(status_code=501, detail="Authentication not implemented")
+
+
+@app.post("/auth/logout", tags=["Auth"])
+async def auth_logout():
+    """Stub logout endpoint."""
+    return {"message": "Logged out"}
+
+
+# ============================================================================
 # ERROR HANDLERS
 # ============================================================================
 
