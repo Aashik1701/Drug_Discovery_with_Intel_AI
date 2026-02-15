@@ -5,8 +5,8 @@
 
 import axios from 'axios';
 
-// Base API URL
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Base API URL - FastAPI backend on port 5001
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
 // Create axios instance with base config
 const apiClient = axios.create({
@@ -14,6 +14,7 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 30000, // 30s timeout for ML predictions
 });
 
 // Request interceptor for adding auth token
@@ -36,11 +37,14 @@ apiClient.interceptors.response.use(
     
     // Handle specific error codes
     if (response && response.status === 401) {
-      // Unauthorized - clear token and redirect to login
       localStorage.removeItem('token');
       window.location.href = '/signin';
     }
-    
+
+    if (response && response.status === 503) {
+      console.error('Service unavailable - ML model may not be loaded');
+    }
+
     return Promise.reject(error);
   }
 );
@@ -53,7 +57,7 @@ export const authService = {
     localStorage.removeItem('token');
     return Promise.resolve();
   },
-  getProfile: () => apiClient.get('/auth/profile'),
+  getProfile: () => apiClient.get('/auth/me'),
 };
 
 // Drug prediction endpoints
@@ -77,7 +81,7 @@ export const predictionService = {
   predictHEPG2: (smiles) => apiClient.post('/predict/hepg2', { smiles }),
   
   // Binding Score prediction
-  predictBindingScore: (smiles, targetId) => apiClient.post('/predict/binding-score', { smiles, targetId }),
+  predictBindingScore: (smiles, targetId) => apiClient.post('/predict/binding-score', { smiles, target_id: targetId }),
   
   // ACE2 prediction
   predictACE2: (smiles) => apiClient.post('/predict/ace2', { smiles }),
@@ -109,9 +113,16 @@ export const userService = {
   getResults: () => apiClient.get('/user/results'),
 };
 
+// Health check
+export const healthService = {
+  check: () => apiClient.get('/health'),
+  listModels: () => apiClient.get('/models'),
+};
+
 export default {
   authService,
   predictionService,
+  healthService,
   dockingService,
   targetService,
   userService,

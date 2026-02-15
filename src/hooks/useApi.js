@@ -13,8 +13,8 @@ export const useApi = () => {
   const [localLoading, setLocalLoading] = useState(false);
   const [localError, setLocalError] = useState(null);
 
-  // Get the API base URL from environment variables
-  const apiBaseUrl = import.meta.env.VITE_FLASK_API_URL || 'http://localhost:5000';
+  // Get the API base URL from environment variables - FastAPI on port 5001
+  const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5001';
 
   /**
    * Make a POST request to the API
