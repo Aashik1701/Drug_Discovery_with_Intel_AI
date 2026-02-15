@@ -13,6 +13,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 // Layout Components (always loaded)
 import GlassHeader from './components/GlassHeader.jsx';
 import GlassLayout from './components/layout/GlassLayout.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 import Chatbot from './components/Chatbot.jsx';
 import Notifications from './components/Notifications.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
@@ -61,24 +62,24 @@ const AppContent = () => {
             {/* ═══ 1. Public Landing Page ═══ */}
             <Route path="/" element={<LandingPage />} />
 
-            {/* ═══ 2. App Dashboard (Sidebar layout) ═══ */}
-            <Route path="/app" element={<GlassLayout><AppDashboard /></GlassLayout>} />
+            {/* ═══ 2. App Dashboard (Sidebar layout, protected) ═══ */}
+            <Route path="/app" element={<ProtectedRoute><GlassLayout><AppDashboard /></GlassLayout></ProtectedRoute>} />
 
             {/* ═══ 3. Lab Bench (replaces 9 prediction routes) ═══ */}
-            <Route path="/app/analyze" element={<GlassLayout><LabBench /></GlassLayout>} />
+            <Route path="/app/analyze" element={<ProtectedRoute><GlassLayout><LabBench /></GlassLayout></ProtectedRoute>} />
 
             {/* ═══ 4. Batch Processor ═══ */}
-            <Route path="/app/batch" element={<GlassLayout><BatchProcessor /></GlassLayout>} />
+            <Route path="/app/batch" element={<ProtectedRoute><GlassLayout><BatchProcessor /></GlassLayout></ProtectedRoute>} />
 
             {/* ═══ 5. User Settings ═══ */}
-            <Route path="/app/settings" element={<GlassLayout><UserSettings /></GlassLayout>} />
+            <Route path="/app/settings" element={<ProtectedRoute><GlassLayout><UserSettings /></GlassLayout></ProtectedRoute>} />
 
             {/* Auth */}
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/signin" element={<SignInPage />} />
 
-            {/* Molecular Visualization (standalone tool) */}
-            <Route path="/molecular-visualization" element={<GlassLayout><MolecularVisualizationPage /></GlassLayout>} />
+            {/* Molecular Visualization (standalone tool, protected) */}
+            <Route path="/molecular-visualization" element={<ProtectedRoute><GlassLayout><MolecularVisualizationPage /></GlassLayout></ProtectedRoute>} />
 
             {/* ═══ Legacy Redirects → Lab Bench ═══ */}
             <Route path="/dashboard" element={<Navigate to="/app" replace />} />

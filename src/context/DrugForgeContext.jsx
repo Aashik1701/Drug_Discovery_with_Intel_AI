@@ -169,10 +169,19 @@ export const DrugForgeProvider = ({ children }) => {
     }
   }, []);
 
+  // Computed convenience values
+  const isDarkMode = state.theme === 'dark';
+  const toggleTheme = () => dispatch({
+    type: ActionTypes.SET_THEME,
+    payload: state.theme === 'dark' ? 'light' : 'dark',
+  });
+
   // Context value
   const value = {
     state,
     dispatch,
+    isDarkMode,
+    toggleTheme,
     // Action helper functions
     setUser: (user) => dispatch({ 
       type: ActionTypes.SET_USER, 

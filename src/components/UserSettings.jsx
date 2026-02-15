@@ -3,9 +3,11 @@ import { motion } from 'framer-motion';
 import { User, Palette, Key, Bell, Shield, LogOut, Moon, Sun, Monitor } from 'lucide-react';
 import GlassCard, { GlassPanel, GlassButton, GlassInput, GlassBadge } from './ui/GlassCard';
 import { useDrugForge } from '../context/DrugForgeContext';
+import { useAuth } from '../context/AuthContext';
 
 const UserSettings = () => {
   const { isDarkMode, toggleTheme } = useDrugForge();
+  const { user } = useAuth();
   const [activeSection, setActiveSection] = useState('profile');
 
   const sections = [
@@ -73,14 +75,26 @@ const UserSettings = () => {
 
 // ─── Profile Section ──────────────────────────────────────────
 const ProfileSection = () => {
+  const { user, updateProfile } = useAuth();
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [profile, setProfile] = useState({
-    name: '',
-    email: '',
-    institution: '',
+    name: user?.name || '',
+    email: user?.email || '',
+    institution: user?.institution || '',
   });
 
   const handleChange = (field, value) => {
     setProfile(prev => ({ ...prev, [field]: value }));
+    setSaved(false);
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+    await updateProfile(profile);
+    setSaving(false);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
   return (
@@ -93,7 +107,7 @@ const ProfileSection = () => {
           {profile.name ? profile.name[0].toUpperCase() : 'U'}
         </div>
         <div>
-          <GlassButton variant="ghost" className="text-sm">Change Avatar</GlassButton>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{profile.email}</p>
         </div>
       </div>
 
@@ -123,7 +137,9 @@ const ProfileSection = () => {
             placeholder="MIT, Stanford, etc."
           />
         </div>
-        <GlassButton variant="primary" className="mt-4">Save Changes</GlassButton>
+        <GlassButton variant="primary" className="mt-4" onClick={handleSave} disabled={saving}>
+          {saving ? 'Saving…' : saved ? '✓ Saved' : 'Save Changes'}
+        </GlassButton>
       </div>
     </GlassPanel>
   );
