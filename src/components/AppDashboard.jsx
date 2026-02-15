@@ -73,8 +73,11 @@ const AppDashboard = () => {
   }, [navigate]);
 
   // Compute model status indicators
+  // API returns { "solubility": { status: "ready" }, "half_life": ... }
+  // Frontend model IDs use hyphens (half-life), API uses underscores (half_life)
+  const normalizeId = (id) => id.replace(/-/g, '_');
   const loadedModels = modelHealth?.models
-    ? Object.entries(modelHealth.models).filter(([, v]) => v === true || v?.loaded === true)
+    ? Object.entries(modelHealth.models).filter(([, v]) => v === true || v?.loaded === true || v?.status === 'ready')
     : [];
   const totalModels = MODEL_REGISTRY.length;
   const onlineCount = loadedModels.length;
@@ -186,8 +189,9 @@ const AppDashboard = () => {
                 {/* Per-model dots */}
                 <div className="grid grid-cols-3 gap-2">
                   {MODEL_REGISTRY.map((model) => {
-                    const isOnline = modelHealth?.models?.[model.id] === true
-                      || modelHealth?.models?.[model.id]?.loaded === true;
+                    const apiId = normalizeId(model.id);
+                    const entry = modelHealth?.models?.[model.id] || modelHealth?.models?.[apiId];
+                    const isOnline = entry === true || entry?.loaded === true || entry?.status === 'ready';
                     return (
                       <div key={model.id} className="flex items-center gap-1.5" title={model.name}>
                         <div className={`w-2 h-2 rounded-full ${

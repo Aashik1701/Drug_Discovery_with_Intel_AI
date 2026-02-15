@@ -40,7 +40,16 @@ export default {
           rose: '#f43f5e',    // Danger states
           amber: '#f59e0b',   // Warning states
         },
+        // Gemini "Cyber-Bio" semantic colors
+        bio: {
+          teal: '#2DD4BF',    // Teal-400
+          blue: '#3B82F6',    // Blue-500
+          violet: '#8B5CF6',  // Violet-500
+        },
         glass: {
+          100: 'rgba(255, 255, 255, 0.1)',
+          200: 'rgba(255, 255, 255, 0.2)',
+          300: 'rgba(255, 255, 255, 0.3)',
           light: 'rgba(255, 255, 255, 0.1)',
           lighter: 'rgba(255, 255, 255, 0.05)',
           dark: 'rgba(0, 0, 0, 0.2)',
@@ -69,6 +78,7 @@ export default {
         'slide-down': 'slide-down 0.5s ease-out',
         'fade-in': 'fade-in 0.3s ease-in',
         'shimmer': 'shimmer 2s infinite',
+        'blob': 'blob 7s infinite',
       },
       keyframes: {
         float: {
@@ -94,6 +104,12 @@ export default {
         'shimmer': {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
+        },
+        blob: {
+          '0%': { transform: 'translate(0px, 0px) scale(1)' },
+          '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+          '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+          '100%': { transform: 'translate(0px, 0px) scale(1)' },
         },
       },
     },

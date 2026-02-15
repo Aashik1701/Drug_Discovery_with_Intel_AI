@@ -15,10 +15,13 @@ const GlassCard = ({
   children, 
   className = '', 
   hoverable = true,
+  hoverEffect,          // Gemini-style alias for hoverable
   animation = {},
   onClick,
   ...props 
 }) => {
+  // Support both prop names
+  const isHoverable = hoverEffect !== undefined ? hoverEffect : hoverable;
   const defaultAnimation = {
     initial: { opacity: 0, y: 20, scale: 0.95 },
     animate: { opacity: 1, y: 0, scale: 1 },
@@ -28,7 +31,7 @@ const GlassCard = ({
 
   const mergedAnimation = { ...defaultAnimation, ...animation };
 
-  const hoverClasses = hoverable 
+  const hoverClasses = isHoverable 
     ? 'hover:bg-white/20 hover:-translate-y-1 hover:shadow-2xl dark:hover:bg-white/10' 
     : '';
 
@@ -46,6 +49,7 @@ const GlassCard = ({
         ${className}
       `}
       onClick={onClick}
+      whileHover={isHoverable ? { y: -5, boxShadow: '0 20px 40px -10px rgba(45, 212, 191, 0.2)' } : {}}
       {...mergedAnimation}
       {...props}
     >
@@ -58,7 +62,7 @@ const GlassCard = ({
       </div>
 
       {/* Glow effect on hover */}
-      {hoverable && (
+      {isHoverable && (
         <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none">
           <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-transparent to-violet-500/10" />
         </div>

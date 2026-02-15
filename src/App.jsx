@@ -1,7 +1,9 @@
 // App.js — DrugForge 2.0 "Glass Laboratory"
 // Consolidated from 22+ routes down to 5 core routes
+// Public routes → GlassHeader (top floating nav)
+// App routes   → Sidebar + inner Header via GlassLayout
 import React, { Suspense, lazy } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import './index.css';
 
 // Context Providers
@@ -10,6 +12,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 
 // Layout Components (always loaded)
 import GlassHeader from './components/GlassHeader.jsx';
+import GlassLayout from './components/layout/GlassLayout.jsx';
 import Chatbot from './components/Chatbot.jsx';
 import Notifications from './components/Notifications.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
@@ -41,6 +44,72 @@ const SignInPage = lazy(() => import('./pages/SignIn.jsx'));
 // Kept for direct access (visualizations)
 const MolecularVisualizationPage = lazy(() => import('./components/MolecularVisualizationPage.jsx'));
 
+// ─── Inner shell: uses useLocation to swap between public/app layouts ───
+const AppContent = () => {
+  const location = useLocation();
+  const isAppRoute = location.pathname.startsWith('/app');
+
+  return (
+    <>
+      {/* Public routes get the floating GlassHeader; app routes get the Sidebar via GlassLayout */}
+      {!isAppRoute && <GlassHeader />}
+      <Notifications />
+
+      <Suspense fallback={<LoadingFallback />}>
+        <div className={!isAppRoute ? 'pt-16 min-h-screen text-gray-900 dark:text-gray-100' : 'text-gray-900 dark:text-gray-100'}>
+          <Routes>
+            {/* ═══ 1. Public Landing Page ═══ */}
+            <Route path="/" element={<LandingPage />} />
+
+            {/* ═══ 2. App Dashboard (Sidebar layout) ═══ */}
+            <Route path="/app" element={<GlassLayout><AppDashboard /></GlassLayout>} />
+
+            {/* ═══ 3. Lab Bench (replaces 9 prediction routes) ═══ */}
+            <Route path="/app/analyze" element={<GlassLayout><LabBench /></GlassLayout>} />
+
+            {/* ═══ 4. Batch Processor ═══ */}
+            <Route path="/app/batch" element={<GlassLayout><BatchProcessor /></GlassLayout>} />
+
+            {/* ═══ 5. User Settings ═══ */}
+            <Route path="/app/settings" element={<GlassLayout><UserSettings /></GlassLayout>} />
+
+            {/* Auth */}
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/signin" element={<SignInPage />} />
+
+            {/* Molecular Visualization (standalone tool) */}
+            <Route path="/molecular-visualization" element={<GlassLayout><MolecularVisualizationPage /></GlassLayout>} />
+
+            {/* ═══ Legacy Redirects → Lab Bench ═══ */}
+            <Route path="/dashboard" element={<Navigate to="/app" replace />} />
+            <Route path="/solubility-checker" element={<Navigate to="/app/analyze" replace />} />
+            <Route path="/cyp3a4-predictor" element={<Navigate to="/app/analyze" replace />} />
+            <Route path="/half-life" element={<Navigate to="/app/analyze" replace />} />
+            <Route path="/cox2" element={<Navigate to="/app/analyze" replace />} />
+            <Route path="/hepg2" element={<Navigate to="/app/analyze" replace />} />
+            <Route path="/bbbp" element={<Navigate to="/app/analyze" replace />} />
+            <Route path="/binding-score" element={<Navigate to="/app/analyze" replace />} />
+            <Route path="/ace2" element={<Navigate to="/app/analyze" replace />} />
+            <Route path="/toxicity" element={<Navigate to="/app/analyze" replace />} />
+            <Route path="/virtual-screening" element={<Navigate to="/app/analyze" replace />} />
+            <Route path="/batch-prediction" element={<Navigate to="/app/batch" replace />} />
+            <Route path="/features" element={<Navigate to="/#features" replace />} />
+            <Route path="/services" element={<Navigate to="/" replace />} />
+            <Route path="/pricing" element={<Navigate to="/#pricing" replace />} />
+            <Route path="/contact" element={<Navigate to="/" replace />} />
+            <Route path="/profile" element={<Navigate to="/app/settings" replace />} />
+
+            {/* Not Found */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
+      </Suspense>
+
+      <Chatbot />
+    </>
+  );
+};
+
 const App = () => {
   return (
     <ErrorBoundary>
@@ -48,60 +117,7 @@ const App = () => {
         <DrugForgeProvider>
           <ThemeProvider>
             <GlassBackground>
-              <div className="flex flex-col min-h-screen text-gray-900 transition-colors duration-300 dark:text-gray-100">
-                <GlassHeader />
-                <Notifications />
-                <main className="flex-grow pt-16">
-                  <Suspense fallback={<LoadingFallback />}>
-                    <Routes>
-                      {/* ═══ 1. Public Landing Page ═══ */}
-                      <Route path="/" element={<LandingPage />} />
-
-                      {/* ═══ 2. App Dashboard ═══ */}
-                      <Route path="/app" element={<AppDashboard />} />
-
-                      {/* ═══ 3. Lab Bench (replaces 9 prediction routes) ═══ */}
-                      <Route path="/app/analyze" element={<LabBench />} />
-
-                      {/* ═══ 4. Batch Processor ═══ */}
-                      <Route path="/app/batch" element={<BatchProcessor />} />
-
-                      {/* ═══ 5. User Settings ═══ */}
-                      <Route path="/app/settings" element={<UserSettings />} />
-
-                      {/* Auth */}
-                      <Route path="/register" element={<RegisterPage />} />
-                      <Route path="/signin" element={<SignInPage />} />
-
-                      {/* Molecular Visualization (standalone tool) */}
-                      <Route path="/molecular-visualization" element={<MolecularVisualizationPage />} />
-
-                      {/* ═══ Legacy Redirects → Lab Bench ═══ */}
-                      <Route path="/dashboard" element={<Navigate to="/app" replace />} />
-                      <Route path="/solubility-checker" element={<Navigate to="/app/analyze" replace />} />
-                      <Route path="/cyp3a4-predictor" element={<Navigate to="/app/analyze" replace />} />
-                      <Route path="/half-life" element={<Navigate to="/app/analyze" replace />} />
-                      <Route path="/cox2" element={<Navigate to="/app/analyze" replace />} />
-                      <Route path="/hepg2" element={<Navigate to="/app/analyze" replace />} />
-                      <Route path="/bbbp" element={<Navigate to="/app/analyze" replace />} />
-                      <Route path="/binding-score" element={<Navigate to="/app/analyze" replace />} />
-                      <Route path="/ace2" element={<Navigate to="/app/analyze" replace />} />
-                      <Route path="/toxicity" element={<Navigate to="/app/analyze" replace />} />
-                      <Route path="/virtual-screening" element={<Navigate to="/app/analyze" replace />} />
-                      <Route path="/batch-prediction" element={<Navigate to="/app/batch" replace />} />
-                      <Route path="/features" element={<Navigate to="/#features" replace />} />
-                      <Route path="/services" element={<Navigate to="/" replace />} />
-                      <Route path="/pricing" element={<Navigate to="/#pricing" replace />} />
-                      <Route path="/contact" element={<Navigate to="/" replace />} />
-                      <Route path="/profile" element={<Navigate to="/app/settings" replace />} />
-
-                      {/* Not Found */}
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </Suspense>
-                </main>
-                <Chatbot />
-              </div>
+              <AppContent />
             </GlassBackground>
           </ThemeProvider>
         </DrugForgeProvider>
