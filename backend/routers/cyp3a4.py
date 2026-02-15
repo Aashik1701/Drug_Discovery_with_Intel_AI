@@ -50,11 +50,13 @@ async def predict_cyp3a4(mol: MoleculeInput) -> PredictionResponse:
 
     start = time.perf_counter()
     try:
-        prediction = float(model.predict(features)[0])
-        confidence = None
         if hasattr(model, "predict_proba"):
             proba = model.predict_proba(features)[0]
+            prediction = round(float(proba[1]), 4)  # P(inhibitor)
             confidence = round(float(max(proba)), 4)
+        else:
+            prediction = float(model.predict(features)[0])
+            confidence = None
     except Exception as e:
         logger.error(f"CYP3A4 inference failed: {e}")
         raise HTTPException(status_code=500, detail="Prediction failed")

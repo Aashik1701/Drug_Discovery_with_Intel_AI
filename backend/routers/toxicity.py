@@ -50,11 +50,13 @@ async def predict_toxicity(mol: MoleculeInput) -> PredictionResponse:
 
     start = time.perf_counter()
     try:
-        prediction = float(model.predict(features)[0])
-        confidence = None
         if hasattr(model, "predict_proba"):
             proba = model.predict_proba(features)[0]
+            prediction = round(float(proba[1]), 4)  # P(toxic)
             confidence = round(float(max(proba)), 4)
+        else:
+            prediction = float(model.predict(features)[0])
+            confidence = None
     except Exception as e:
         logger.error(f"Toxicity inference failed: {e}")
         raise HTTPException(status_code=500, detail="Prediction failed")
