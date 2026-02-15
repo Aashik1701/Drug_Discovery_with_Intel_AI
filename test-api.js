@@ -5,7 +5,7 @@ const axios = require('axios');
 console.log('Starting API test...');
 
 // Read environment variables manually
-let apiKey = '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';
+let apiKey = process.env.OPENAI_API_KEY || '';
 
 try {
     console.log('Reading .env file...');

@@ -2,7 +2,11 @@ console.log('Starting simple API test...');
 
 const axios = require('axios');
 
-const apiKey = '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';
+const apiKey = process.env.OPENAI_API_KEY || 'sk-test-placeholder';
+if (apiKey === 'sk-test-placeholder') {
+    console.error('ERROR: Please set your OpenAI API key in the OPENAI_API_KEY environment variable');
+    process.exit(1);
+}
 
 console.log('API Key present:', !!apiKey);
 console.log('API Key format valid:', apiKey.startsWith('sk-'));

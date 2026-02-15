@@ -1,7 +1,11 @@
 // Quick test script to verify Google Gemini API key
 const axios = require('axios');
 
-const apiKey = 'AIzaSyA8-5p0GwyPeW816xN3YdHyerksOvlAG0s';
+const apiKey = process.env.GOOGLE_API_KEY || 'your_gemini_api_key_here';
+if (apiKey === 'your_gemini_api_key_here') {
+    console.error('ERROR: Please set your Gemini API key in the GOOGLE_API_KEY environment variable');
+    process.exit(1);
+}
 
 console.log('Testing Google Gemini API...');
 console.log('API Key present:', !!apiKey);
