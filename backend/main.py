@@ -130,6 +130,7 @@ logger.info(f"✅ CORS configured for origins: {ALLOWED_ORIGINS}")
 
 from routers import solubility, bbbp, cyp3a4, toxicity, binding_score
 from routers import cox2, hepg2, ace2, half_life
+from routers import utils as utils_router
 
 app.include_router(solubility.router, prefix="/predict", tags=["Predictions"])
 app.include_router(bbbp.router, prefix="/predict", tags=["Predictions"])
@@ -140,6 +141,7 @@ app.include_router(cox2.router, prefix="/predict", tags=["Predictions"])
 app.include_router(hepg2.router, prefix="/predict", tags=["Predictions"])
 app.include_router(ace2.router, prefix="/predict", tags=["Predictions"])
 app.include_router(half_life.router, prefix="/predict", tags=["Predictions"])
+app.include_router(utils_router.router, prefix="/utils", tags=["Utilities"])
 
 
 # ============================================================================

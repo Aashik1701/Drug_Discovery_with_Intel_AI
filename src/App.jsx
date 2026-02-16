@@ -79,7 +79,8 @@ const AppContent = () => {
             <Route path="/signin" element={<SignInPage />} />
 
             {/* Molecular Visualization (standalone tool, protected) */}
-            <Route path="/molecular-visualization" element={<ProtectedRoute><GlassLayout><MolecularVisualizationPage /></GlassLayout></ProtectedRoute>} />
+            <Route path="/app/visualization" element={<ProtectedRoute><GlassLayout><MolecularVisualizationPage /></GlassLayout></ProtectedRoute>} />
+            <Route path="/molecular-visualization" element={<Navigate to="/app/visualization" replace />} />
 
             {/* ═══ Legacy Redirects → Lab Bench ═══ */}
             <Route path="/dashboard" element={<Navigate to="/app" replace />} />
