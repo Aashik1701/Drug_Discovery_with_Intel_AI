@@ -17,6 +17,8 @@ import {
   Camera,
   RefreshCw,
   Layers,
+  Pause,
+  Play,
 } from 'lucide-react';
 
 /* ── tiny toolbar button ─────────────────────────────────────────── */
@@ -51,6 +53,7 @@ const Molecule3DViewer = ({
   const [viewMode, setViewMode] = useState('stick');   // stick | sphere | line
   const [showSurface, setShowSurface] = useState(false);
   const [hoveredAtom, setHoveredAtom] = useState(null);
+  const [isSpinning, setIsSpinning] = useState(spin);
 
   /* ── style map ─────────────────────────────────────────────────── */
   const styleForMode = useCallback((mode) => {
@@ -173,7 +176,10 @@ const Molecule3DViewer = ({
         applyStyle();
         viewer.zoomTo();
         viewer.render();
-        if (spin) viewer.spin('y', 0.5);
+        if (spin) {
+          viewer.spin('y', 0.5);
+          setIsSpinning(true);
+        }
       } catch (err) {
         console.error('[3DViewer] Error:', err);
         if (isMounted) setError('Could not generate 3D structure');
@@ -202,14 +208,27 @@ const Molecule3DViewer = ({
     a.click();
   }, [smiles]);
 
+  /* ── spin toggle ───────────────────────────────────────────────── */
+  const handleToggleSpin = useCallback(() => {
+    const viewer = viewerInstance.current;
+    if (!viewer) return;
+    if (isSpinning) {
+      viewer.spin(false);
+      setIsSpinning(false);
+    } else {
+      viewer.spin('y', 0.5);
+      setIsSpinning(true);
+    }
+  }, [isSpinning]);
+
   /* ── reset camera ──────────────────────────────────────────────── */
   const handleReset = useCallback(() => {
     const viewer = viewerInstance.current;
     if (!viewer) return;
     viewer.zoomTo();
     viewer.render();
-    if (spin) viewer.spin('y', 0.5);
-  }, [spin]);
+    if (isSpinning) viewer.spin('y', 0.5);
+  }, [isSpinning]);
 
   /* ── dimensions (handle both number & string props) ────────────── */
   const cssWidth = typeof width === 'number' ? `${width}px` : width;
@@ -253,6 +272,12 @@ const Molecule3DViewer = ({
             label="Surface"
             active={showSurface}
             onClick={() => setShowSurface((p) => !p)}
+          />
+          <ControlButton
+            icon={isSpinning ? Pause : Play}
+            label={isSpinning ? 'Stop Spin' : 'Start Spin'}
+            active={isSpinning}
+            onClick={handleToggleSpin}
           />
           <ControlButton
             icon={Camera}

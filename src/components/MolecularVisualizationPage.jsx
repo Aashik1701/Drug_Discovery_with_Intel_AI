@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Beaker, Search, RotateCcw, Atom, FlaskConical } from 'lucide-react';
+import { Beaker, Search, RotateCcw, Atom, Sparkles } from 'lucide-react';
 import Molecule3DViewer from './Molecule3DViewer';
 
 const EXAMPLES = [
@@ -16,11 +16,11 @@ const EXAMPLES = [
 /**
  * Molecule Studio – full-page immersive 3D molecular visualization.
  *
- * Uses the upgraded Molecule3DViewer with glass toolbar, view-mode
- * toggles, VDW surface overlay, atom hover labels, and screenshot.
+ * Horizontal "Quick Select" glass chips replace the vertical sidebar,
+ * giving the 3D viewer 100% width.
  */
 const MolecularVisualizationPage = () => {
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(EXAMPLES[0].smiles);
   const [currentSmiles, setCurrentSmiles] = useState(EXAMPLES[0].smiles);
   const [currentName, setCurrentName] = useState(EXAMPLES[0].name);
 
@@ -49,30 +49,31 @@ const MolecularVisualizationPage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col h-full min-h-[calc(100vh-4rem)] gap-4 p-4">
-      {/* ── Header bar ───────────────────────────────────────────── */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col h-full gap-4">
+      {/* ── Header + Search ────────────────────────────────────── */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 border border-white/10">
             <Atom className="w-6 h-6 text-cyan-400" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-white">Molecule Studio</h1>
+            <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-violet-400">
+              Molecule Studio
+            </h1>
             <p className="text-xs text-slate-400">
-              Interactive 3D molecular visualization
+              Interactive 3D visualization engine
             </p>
           </div>
         </div>
 
-        {/* SMILES search */}
-        <form onSubmit={handleSubmit} className="flex gap-2 flex-1 max-w-xl">
+        <form onSubmit={handleSubmit} className="relative w-full md:w-96 flex gap-2">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
             <input
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Enter SMILES string…"
-              className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 font-mono"
+              placeholder="Enter SMILES…"
+              className="w-full pl-9 pr-3 py-2.5 rounded-xl bg-white/10 border border-white/20 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 backdrop-blur-md font-mono"
             />
           </div>
           <button
@@ -92,66 +93,54 @@ const MolecularVisualizationPage = () => {
         </form>
       </div>
 
-      {/* ── Main content ─────────────────────────────────────────── */}
-      <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0">
-        {/* Left sidebar – example molecules */}
-        <div className="lg:w-56 shrink-0">
-          <div className="rounded-xl bg-white/5 border border-white/10 p-3">
-            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <FlaskConical className="w-3.5 h-3.5" />
-              Examples
-            </h2>
-            <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-x-visible pb-1 lg:pb-0">
-              {EXAMPLES.map((ex) => (
-                <button
-                  key={ex.name}
-                  onClick={() => handleExample(ex)}
-                  className={`text-left px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-all ${
-                    currentSmiles === ex.smiles
-                      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
-                      : 'text-slate-300 hover:bg-white/5 border border-transparent'
-                  }`}
-                >
-                  {ex.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
+      {/* ── Quick Select Chips ─────────────────────────────────── */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider mr-1 flex items-center shrink-0">
+          <Sparkles className="w-3 h-3 mr-1" /> Quick Load:
+        </span>
+        {EXAMPLES.map((ex) => (
+          <button
+            key={ex.name}
+            onClick={() => handleExample(ex)}
+            className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all border ${
+              currentSmiles === ex.smiles
+                ? 'bg-cyan-500/20 border-cyan-500/50 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.2)]'
+                : 'bg-white/5 border-white/10 text-slate-500 hover:bg-white/10 hover:text-slate-300'
+            }`}
+          >
+            {ex.name}
+          </button>
+        ))}
+      </div>
 
-        {/* 3D Viewer – fills remaining space */}
-        <div className="flex-1 flex flex-col min-h-0">
-          {/* current molecule label */}
-          {currentName && currentSmiles && (
-            <div className="mb-2 flex items-center gap-2">
-              <span className="text-sm font-medium text-white">
-                {currentName}
-              </span>
-              <span className="text-xs font-mono text-slate-500 truncate max-w-xs">
-                {currentSmiles}
-              </span>
-            </div>
-          )}
-
-          <div className="flex-1 rounded-xl border border-white/10 overflow-hidden bg-[#0a0f1a] min-h-[400px]">
-            {currentSmiles ? (
-              <Molecule3DViewer
-                smiles={currentSmiles}
-                width="100%"
-                height="100%"
-                showControls={true}
-                spin={true}
-              />
-            ) : (
-              <div className="h-full flex flex-col items-center justify-center text-slate-500 gap-3">
-                <Beaker className="w-12 h-12 opacity-40" />
-                <p className="text-sm">
-                  Enter a SMILES string or pick an example to begin
-                </p>
-              </div>
-            )}
-          </div>
+      {/* ── Molecule label ─────────────────────────────────────── */}
+      {currentName && currentSmiles && (
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium text-white">{currentName}</span>
+          <span className="text-xs font-mono text-slate-500 truncate max-w-sm">
+            {currentSmiles}
+          </span>
         </div>
+      )}
+
+      {/* ── 3D Viewer – Full Width ─────────────────────────────── */}
+      <div className="flex-1 relative rounded-2xl overflow-hidden shadow-2xl border border-white/20 min-h-[400px]">
+        {currentSmiles ? (
+          <Molecule3DViewer
+            smiles={currentSmiles}
+            width="100%"
+            height="100%"
+            showControls={true}
+            spin={true}
+          />
+        ) : (
+          <div className="h-full flex flex-col items-center justify-center text-slate-500 gap-3 bg-[#0a0f1a]">
+            <Beaker className="w-12 h-12 opacity-40" />
+            <p className="text-sm">
+              Enter a SMILES string or pick an example to begin
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
