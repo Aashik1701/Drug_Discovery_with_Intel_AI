@@ -4,6 +4,7 @@ import {
   LayoutDashboard, 
   FlaskConical, 
   Layers, 
+  Dna,
   Settings, 
   LogOut 
 } from 'lucide-react';
@@ -12,6 +13,7 @@ import { useAuth } from '../../context/AuthContext';
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/app' },
   { icon: FlaskConical, label: 'Lab Bench', path: '/app/analyze' },
+  { icon: Dna, label: 'Molecule 3D', path: '/app/visualization' },
   { icon: Layers, label: 'Batch Process', path: '/app/batch' },
   { icon: Settings, label: 'Settings', path: '/app/settings' },
 ];

@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import GlassCard, { GlassPanel, GlassButton, GlassBadge } from './ui/GlassCard';
 import { ShimmerBlock, ShimmerText } from './ui/ShimmerLoader';
+import RDKitMolecularVisualization from './RDKitMolecularVisualization';
+import Molecule3DViewer from './Molecule3DViewer';
 
 // ────────────────────────────────────────────────────────────
 //  MODEL DEFINITIONS
@@ -178,8 +180,8 @@ const ResultCard = ({ model, result, isLoading }) => {
           </div>
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{model.name}</span>
         </div>
-        <ShimmerBlock className="h-8 w-2/3 mb-2" />
-        <ShimmerBlock className="h-4 w-1/2" />
+        <ShimmerBlock className="w-2/3 h-8 mb-2" />
+        <ShimmerBlock className="w-1/2 h-4" />
       </GlassCard>
     );
   }
@@ -188,12 +190,12 @@ const ResultCard = ({ model, result, isLoading }) => {
     return (
       <GlassCard className="p-5 border-rose-500/20" hoverable={false}>
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-8 h-8 rounded-lg bg-rose-500/20 flex items-center justify-center">
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500/20">
             <XCircle className="w-4 h-4 text-rose-500" />
           </div>
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{model.name}</span>
         </div>
-        <p className="text-xs text-rose-500 truncate">{result.error}</p>
+        <p className="text-xs truncate text-rose-500">{result.error}</p>
       </GlassCard>
     );
   }
@@ -226,7 +228,7 @@ const ResultCard = ({ model, result, isLoading }) => {
           </GlassBadge>
         </div>
         <div className="flex items-baseline gap-2">
-          <span className="text-2xl font-semibold text-gray-900 dark:text-white font-mono">
+          <span className="font-mono text-2xl font-semibold text-gray-900 dark:text-white">
             {typeof formatted.value === 'number' ? formatted.value.toFixed(3) : String(formatted.value)}
           </span>
           {formatted.unit && (
@@ -248,6 +250,7 @@ const LabBench = () => {
   const [results, setResults] = useState({});
   const [runningModels, setRunningModels] = useState(new Set());
   const [hasRun, setHasRun] = useState(false);
+  const [viewMode, setViewMode] = useState('3d'); // '2d' | '3d'
   const inputRef = useRef(null);
 
   const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5001';
@@ -351,7 +354,7 @@ const LabBench = () => {
 
   return (
     <div className="min-h-screen pb-24">
-      <div className="max-w-7xl mx-auto p-4 md:p-8">
+      <div className="p-4 mx-auto max-w-7xl md:p-8">
 
         {/* ─── TOP: Input Bar ─────────────────────────────── */}
         <motion.div
@@ -360,29 +363,22 @@ const LabBench = () => {
           className="mb-6"
         >
           <GlassPanel className="p-5">
-            <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-4">
-              <div className="flex-1 relative">
-                <Atom className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-cyan-500" />
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4 md:flex-row">
+              <div className="relative flex-1">
+                <Atom className="absolute w-5 h-5 -translate-y-1/2 left-4 top-1/2 text-cyan-500" />
                 <input
                   ref={inputRef}
                   type="text"
                   value={smiles}
                   onChange={(e) => setSmiles(e.target.value)}
                   placeholder="Paste SMILES notation here…"
-                  className="w-full h-14 pl-12 pr-12 rounded-xl
-                    bg-white/30 dark:bg-black/30
-                    backdrop-blur-md
-                    border border-white/20 dark:border-gray-700/30
-                    text-gray-900 dark:text-gray-100 font-mono text-lg
-                    placeholder-gray-400 dark:placeholder-gray-500
-                    focus:outline-none focus:ring-2 focus:ring-cyan-500/50
-                    transition-all duration-200"
+                  className="w-full pl-12 pr-12 font-mono text-lg text-gray-900 placeholder-gray-400 transition-all duration-200 border h-14 rounded-xl bg-white/30 dark:bg-black/30 backdrop-blur-md border-white/20 dark:border-gray-700/30 dark:text-gray-100 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
                 />
                 {smiles && (
                   <button
                     type="button"
                     onClick={copySmiles}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-cyan-500 transition-colors"
+                    className="absolute p-2 text-gray-400 transition-colors -translate-y-1/2 right-3 top-1/2 hover:text-cyan-500"
                     title="Copy SMILES"
                   >
                     <Clipboard className="w-4 h-4" />
@@ -394,7 +390,7 @@ const LabBench = () => {
                   type="submit"
                   variant="primary"
                   disabled={!smiles.trim() || anyLoading}
-                  className="px-8 h-14 flex items-center gap-2"
+                  className="flex items-center gap-2 px-8 h-14"
                 >
                   {anyLoading ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -408,7 +404,7 @@ const LabBench = () => {
                     type="button"
                     variant="ghost"
                     onClick={handleReset}
-                    className="h-14 px-4"
+                    className="px-4 h-14"
                     title="Reset"
                   >
                     <RotateCcw className="w-5 h-5" />
@@ -419,10 +415,10 @@ const LabBench = () => {
 
             {/* Quick Stats Tags */}
             {Object.keys(quickStats).length > 0 && (
-              <div className="flex gap-3 mt-4 flex-wrap">
+              <div className="flex flex-wrap gap-3 mt-4">
                 {Object.entries(quickStats).map(([key, val]) => (
                   <GlassBadge key={key} variant="default">
-                    {key}: <span className="font-mono ml-1">{typeof val === 'number' ? val.toFixed(2) : val}</span>
+                    {key}: <span className="ml-1 font-mono">{typeof val === 'number' ? val.toFixed(2) : val}</span>
                   </GlassBadge>
                 ))}
               </div>
@@ -430,13 +426,91 @@ const LabBench = () => {
           </GlassPanel>
         </motion.div>
 
-        {/* ─── Split Layout ───────────────────────────────── */}
+        {/* ─── Split Layout: Structure Viewer + Results ─── */}
         {hasRun && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
+            className="grid grid-cols-1 gap-6 lg:grid-cols-12"
           >
+            {/* LEFT: Sticky Structure Viewer (2D / 3D toggle) */}
+            <div className="lg:col-span-4">
+              <GlassCard className="sticky p-0 top-24">
+                {/* Header with 2D / 3D toggle */}
+                <div className="flex items-center justify-between p-4 border-b border-white/10 bg-white/5">
+                  <h3 className="flex items-center text-lg font-semibold text-slate-700 dark:text-slate-200">
+                    <Atom className="w-5 h-5 mr-2 text-bio-teal" />
+                    Structure Viewer
+                  </h3>
+                  <div className="flex rounded-lg border border-white/20 overflow-hidden text-xs font-medium">
+                    <button
+                      onClick={() => setViewMode('2d')}
+                      className={`px-3 py-1.5 transition-all ${
+                        viewMode === '2d'
+                          ? 'bg-cyan-500/20 text-cyan-600 dark:text-cyan-300'
+                          : 'text-slate-400 hover:bg-white/10'
+                      }`}
+                    >
+                      2D
+                    </button>
+                    <button
+                      onClick={() => setViewMode('3d')}
+                      className={`px-3 py-1.5 transition-all ${
+                        viewMode === '3d'
+                          ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-300'
+                          : 'text-slate-400 hover:bg-white/10'
+                      }`}
+                    >
+                      3D
+                    </button>
+                  </div>
+                </div>
+
+                {/* Molecule Render */}
+                <div className="bg-white/50 dark:bg-black/40 min-h-[300px] flex items-center justify-center">
+                  {smiles ? (
+                    viewMode === '3d' ? (
+                      <Molecule3DViewer
+                        smiles={smiles}
+                        width={350}
+                        height={300}
+                        spin={true}
+                      />
+                    ) : (
+                      <RDKitMolecularVisualization
+                        smiles={smiles}
+                        width={350}
+                        height={300}
+                        showControls={false}
+                        showProperties={false}
+                      />
+                    )
+                  ) : (
+                    <div className="p-8 text-sm italic text-slate-400">
+                      Enter a SMILES string to view structure
+                    </div>
+                  )}
+                </div>
+
+                {/* Quick Stats overlay from results */}
+                {Object.keys(quickStats).length > 0 && (
+                  <div className="grid grid-cols-2 gap-2 p-4 text-xs border-t border-white/10">
+                    {Object.entries(quickStats).slice(0, 4).map(([key, val]) => (
+                      <div key={key} className="p-2 text-center rounded-lg bg-white/20 dark:bg-black/20">
+                        <span className="block text-slate-500 dark:text-slate-400">{key}</span>
+                        <span className="font-mono font-bold text-slate-700 dark:text-slate-200">
+                          {typeof val === 'number' ? val.toFixed(2) : val}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </GlassCard>
+            </div>
+
+            {/* RIGHT: Tab Bar + Results Grid */}
+            <div className="lg:col-span-8">
             {/* Tab Bar */}
             <div className="flex items-center gap-2 mb-6">
               {[
@@ -468,7 +542,7 @@ const LabBench = () => {
                 variant="ghost"
                 onClick={runTabModels}
                 disabled={anyLoading || !smiles.trim()}
-                className="ml-auto text-xs py-2 px-4"
+                className="px-4 py-2 ml-auto text-xs"
               >
                 <RotateCcw className="w-3.5 h-3.5 mr-1.5 inline" />
                 Re-run {activeTab === 'admet' ? 'ADMET' : activeTab === 'targets' ? 'Targets' : ''}
@@ -486,7 +560,7 @@ const LabBench = () => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: activeTab === 'admet' ? 20 : -20 }}
                   transition={{ duration: 0.2 }}
-                  className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                  className="grid grid-cols-1 gap-4 md:grid-cols-2"
                 >
                   {currentModels.map(model => (
                     <ResultCard
@@ -499,6 +573,7 @@ const LabBench = () => {
                 </motion.div>
               )}
             </AnimatePresence>
+            </div>{/* end RIGHT col */}
           </motion.div>
         )}
 
@@ -508,16 +583,16 @@ const LabBench = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-center py-24"
+            className="py-24 text-center"
           >
-            <Atom className="w-16 h-16 mx-auto text-cyan-500/30 mb-6" />
-            <h2 className="text-2xl font-thin text-gray-600 dark:text-gray-400 mb-3">
+            <Atom className="w-16 h-16 mx-auto mb-6 text-cyan-500/30" />
+            <h2 className="mb-3 text-2xl font-thin text-gray-600 dark:text-gray-400">
               Paste a SMILES to begin
             </h2>
-            <p className="text-sm text-gray-400 dark:text-gray-500 max-w-md mx-auto mb-8">
+            <p className="max-w-md mx-auto mb-8 text-sm text-gray-400 dark:text-gray-500">
               All 9 models will run simultaneously. Results appear as they complete.
             </p>
-            <div className="flex flex-wrap gap-2 justify-center max-w-lg mx-auto">
+            <div className="flex flex-wrap justify-center max-w-lg gap-2 mx-auto">
               {[
                 { label: 'Aspirin', smiles: 'CC(=O)Oc1ccccc1C(=O)O' },
                 { label: 'Caffeine', smiles: 'CN1C=NC2=C1C(=O)N(C(=O)N2C)C' },
@@ -527,13 +602,7 @@ const LabBench = () => {
                 <button
                   key={ex.label}
                   onClick={() => { setSmiles(ex.smiles); }}
-                  className="px-4 py-2 rounded-full text-sm
-                    bg-white/10 dark:bg-black/10
-                    border border-white/20 dark:border-gray-700/20
-                    backdrop-blur-md
-                    text-gray-600 dark:text-gray-300
-                    hover:bg-cyan-500/10 hover:border-cyan-500/30 hover:text-cyan-600 dark:hover:text-cyan-400
-                    transition-all duration-200"
+                  className="px-4 py-2 text-sm text-gray-600 transition-all duration-200 border rounded-full bg-white/10 dark:bg-black/10 border-white/20 dark:border-gray-700/20 backdrop-blur-md dark:text-gray-300 hover:bg-cyan-500/10 hover:border-cyan-500/30 hover:text-cyan-600 dark:hover:text-cyan-400"
                 >
                   {ex.label}
                 </button>
@@ -561,10 +630,10 @@ const ReportTab = ({ smiles, results, models }) => {
       <GlassPanel className="p-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h3 className="text-xl font-medium text-gray-800 dark:text-gray-200 mb-1">
+            <h3 className="mb-1 text-xl font-medium text-gray-800 dark:text-gray-200">
               Analysis Report
             </h3>
-            <code className="text-sm font-mono text-gray-500 dark:text-gray-400">
+            <code className="font-mono text-sm text-gray-500 dark:text-gray-400">
               {smiles}
             </code>
           </div>
@@ -576,29 +645,29 @@ const ReportTab = ({ smiles, results, models }) => {
 
         {/* Summary Stats */}
         <div className="grid grid-cols-3 gap-4 mb-8">
-          <div className="text-center p-4 rounded-xl bg-white/10 dark:bg-black/10">
+          <div className="p-4 text-center rounded-xl bg-white/10 dark:bg-black/10">
             <span className="block text-2xl font-bold text-gray-900 dark:text-white">{completedCount}</span>
             <span className="text-xs text-gray-500">Completed</span>
           </div>
-          <div className="text-center p-4 rounded-xl bg-white/10 dark:bg-black/10">
+          <div className="p-4 text-center rounded-xl bg-white/10 dark:bg-black/10">
             <span className="block text-2xl font-bold text-gray-900 dark:text-white">{errorCount}</span>
             <span className="text-xs text-gray-500">Failed</span>
           </div>
-          <div className="text-center p-4 rounded-xl bg-white/10 dark:bg-black/10">
+          <div className="p-4 text-center rounded-xl bg-white/10 dark:bg-black/10">
             <span className="block text-2xl font-bold text-gray-900 dark:text-white">{models.length - completedCount - errorCount}</span>
             <span className="text-xs text-gray-500">Pending</span>
           </div>
         </div>
 
         {/* Results Table */}
-        <div className="overflow-hidden rounded-xl border border-white/10 dark:border-gray-700/20">
+        <div className="overflow-hidden border rounded-xl border-white/10 dark:border-gray-700/20">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-white/5 dark:bg-black/10">
-                <th className="text-left px-4 py-3 text-gray-500 dark:text-gray-400 font-medium">Model</th>
-                <th className="text-left px-4 py-3 text-gray-500 dark:text-gray-400 font-medium">Result</th>
-                <th className="text-left px-4 py-3 text-gray-500 dark:text-gray-400 font-medium">Assessment</th>
-                <th className="text-left px-4 py-3 text-gray-500 dark:text-gray-400 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium text-left text-gray-500 dark:text-gray-400">Model</th>
+                <th className="px-4 py-3 font-medium text-left text-gray-500 dark:text-gray-400">Result</th>
+                <th className="px-4 py-3 font-medium text-left text-gray-500 dark:text-gray-400">Assessment</th>
+                <th className="px-4 py-3 font-medium text-left text-gray-500 dark:text-gray-400">Status</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5 dark:divide-gray-700/10">
@@ -627,7 +696,7 @@ const ReportTab = ({ smiles, results, models }) => {
                     <td className="px-4 py-3 text-gray-700 dark:text-gray-300">{model.name}</td>
                     <td className="px-4 py-3 font-mono text-gray-900 dark:text-white">
                       {typeof fmt.value === 'number' ? fmt.value.toFixed(3) : String(fmt.value)}
-                      {fmt.unit && <span className="text-gray-400 ml-1">{fmt.unit}</span>}
+                      {fmt.unit && <span className="ml-1 text-gray-400">{fmt.unit}</span>}
                     </td>
                     <td className="px-4 py-3">
                       <GlassBadge variant={

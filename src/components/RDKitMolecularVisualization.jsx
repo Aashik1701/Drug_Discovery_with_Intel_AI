@@ -43,42 +43,30 @@ const RDKitMolecularVisualization = ({
   const [molecularProperties, setMolecularProperties] = useState(null);
   const [descriptors, setDescriptors] = useState(null);
   const [fingerprints, setFingerprints] = useState(null);
+  const [usingRealRDKit, setUsingRealRDKit] = useState(false);
 
   // Initialize RDKit
   useEffect(() => {
     const initRDKit = async () => {
       try {
-        // Real RDKit-JS integration
         console.log('Initializing RDKit...');
         
-        // Try to import RDKit-JS
         try {
           const { initRDKitModule } = await import('@rdkit/rdkit');
-          const RDKit = await initRDKitModule();
+          const RDKit = await initRDKitModule({
+            locateFile: () => '/RDKit_minimal.wasm'
+          });
           
           rdkitRef.current = RDKit;
+          setUsingRealRDKit(true);
           setRdkitReady(true);
-          console.log('RDKit initialized successfully with real library');
+          console.log('RDKit initialized successfully with real library, version:', RDKit.version());
         } catch (importError) {
           console.warn('RDKit-JS not available, using fallback implementation:', importError);
           
-          // Fallback to enhanced mock implementation
-          await new Promise(resolve => setTimeout(resolve, 1000));
-          
-          rdkitRef.current = {
-            get_mol: (smi) => ({ 
-              isValid: () => smi && smi.length > 0,
-              get_smiles: () => smi,
-              delete: () => {},
-              _smiles: smi // Store SMILES for structure generation
-            }),
-            get_svg: (mol, w, h, options) => generateMoleculeSpecificSVG(mol._smiles, w, h),
-            get_descriptors: (mol) => generateMoleculeSpecificDescriptors(mol._smiles),
-            get_fingerprint: (mol, type) => generateMoleculeSpecificFingerprint(mol._smiles, type),
-            get_substruct_match: (mol, pattern) => [],
-            prefer_coordgen: true
-          };
-          
+          await new Promise(resolve => setTimeout(resolve, 500));
+          setUsingRealRDKit(false);
+          rdkitRef.current = { _fallback: true };
           setRdkitReady(true);
           console.log('Fallback RDKit implementation initialized');
         }
@@ -90,14 +78,6 @@ const RDKitMolecularVisualization = ({
 
     initRDKit();
   }, []);
-
-  // Auto-generate molecule when SMILES changes
-  useEffect(() => {
-    console.log('useEffect triggered - rdkitReady:', rdkitReady, 'smiles:', smiles);
-    if (rdkitReady && smiles) {
-      generateMolecule();
-    }
-  }, [rdkitReady, smiles, generateMolecule]);
 
   // Update background color when theme changes
   useEffect(() => {
@@ -421,74 +401,87 @@ const RDKitMolecularVisualization = ({
   const generateMolecule = useCallback(async () => {
     if (!rdkitRef.current || !smiles) return;
 
-    console.log('Generating molecule for SMILES:', smiles);
+    console.log('Generating molecule for SMILES:', smiles, 'Real RDKit:', usingRealRDKit);
     setIsLoading(true);
     setError(null);
 
     try {
-      // Create molecule from SMILES
-      const mol = rdkitRef.current.get_mol(smiles);
-      
-      if (!mol.isValid()) {
-        throw new Error('Invalid SMILES string');
-      }
+      if (usingRealRDKit) {
+        // ── Real RDKit-JS path ──
+        const mol = rdkitRef.current.get_mol(smiles);
+        if (!mol || !mol.is_valid()) {
+          throw new Error('Invalid SMILES string');
+        }
 
-      console.log('Molecule created successfully');
-      setMolecule(mol);
-      
-      // Calculate properties
-      const props = rdkitRef.current.get_descriptors(mol);
-      setMolecularProperties(props);
-      
-      // Calculate descriptors
-      setDescriptors(props);
-      
-      // Generate fingerprints
-      const morganFp = rdkitRef.current.get_fingerprint(mol, 'morgan');
-      const rdkitFp = rdkitRef.current.get_fingerprint(mol, 'rdkit');
-      
-      setFingerprints({
-        morgan: morganFp,
-        rdkit: rdkitFp,
-        morganBits: morganFp.reduce((a, b) => a + b, 0),
-        rdkitBits: rdkitFp.reduce((a, b) => a + b, 0)
-      });
-      
-      // Render structure
-      console.log('Rendering structure...');
-      renderStructure(mol);
-      
+        setMolecule(mol);
+
+        // Get descriptors (returns JSON string)
+        try {
+          const descJson = mol.get_descriptors();
+          const desc = JSON.parse(descJson);
+          const props = {
+            MW: desc.exactmw ?? desc.amw ?? 0,
+            LogP: desc.CrippenClogP ?? 0,
+            HBD: desc.NumHBD ?? 0,
+            HBA: desc.NumHBA ?? 0,
+            TPSA: desc.tpsa ?? 0,
+            nRotB: desc.NumRotatableBonds ?? 0,
+            nAromRing: desc.NumAromaticRings ?? 0,
+            nSaturatedRing: desc.NumSaturatedRings ?? 0,
+            nHeteroAtoms: desc.NumHeteroatoms ?? 0,
+          };
+          setMolecularProperties(props);
+          setDescriptors(props);
+        } catch { /* descriptors optional */ }
+
+        // Get fingerprints
+        try {
+          const morganFpStr = mol.get_morgan_fp();
+          const morganBits = morganFpStr.split('').filter(c => c === '1').length;
+          setFingerprints({ morganBits, rdkitBits: 0 });
+        } catch { /* fingerprints optional */ }
+
+        // Render SVG
+        const svg = mol.get_svg(width, height);
+        setCurrentSVG(svg);
+
+      } else {
+        // ── Fallback path (mock SVG) ──
+        const props = generateMoleculeSpecificDescriptors(smiles);
+        setMolecularProperties(props);
+        setDescriptors(props);
+
+        const morganFp = generateMoleculeSpecificFingerprint(smiles, 'morgan');
+        const rdkitFp = generateMoleculeSpecificFingerprint(smiles, 'rdkit');
+        setFingerprints({
+          morganBits: morganFp.reduce((a, b) => a + b, 0),
+          rdkitBits: rdkitFp.reduce((a, b) => a + b, 0),
+        });
+
+        const svg = generateMoleculeSpecificSVG(smiles, width, height);
+        setCurrentSVG(svg);
+        setMolecule({ _smiles: smiles });
+      }
     } catch (err) {
       console.error('Molecule generation error:', err);
       setError(`Error generating molecule: ${err.message}`);
     } finally {
       setIsLoading(false);
     }
-  }, [smiles, renderStructure]);
+  }, [smiles, usingRealRDKit, width, height]);
 
-  const renderStructure = useCallback((mol) => {
-    if (!mol) return;
-
-    try {
-      console.log('Rendering structure for molecule with SMILES:', mol._smiles);
-      
-      // Generate SVG
-      const svg = rdkitRef.current.get_svg(mol, width, height, {
-        ...settings,
-        width: width,
-        height: height
-      });
-
-      console.log('Generated SVG:', svg.substring(0, 200) + '...');
-
-      // Store SVG for direct rendering
-      setCurrentSVG(svg);
-      
-    } catch (err) {
-      console.error('Structure rendering error:', err);
-      setError(`Structure rendering failed: ${err.message}`);
+  // Auto-generate molecule when SMILES changes
+  useEffect(() => {
+    if (rdkitReady && smiles) {
+      generateMolecule();
     }
-  }, [settings, width, height]);
+  }, [rdkitReady, smiles, generateMolecule]);
+
+  const resetView = () => {
+    if (smiles) {
+      generateMolecule();
+    }
+  };
 
   const downloadImage = () => {
     if (!currentSVG) return;
@@ -511,7 +504,7 @@ const RDKitMolecularVisualization = ({
   };
 
   const exportData = () => {
-    if (!molecularProperties || !descriptors) return;
+    if (!molecularProperties) return;
 
     const data = {
       smiles: smiles,
@@ -538,12 +531,6 @@ const RDKitMolecularVisualization = ({
     a.click();
     URL.revokeObjectURL(url);
     document.body.removeChild(a);
-  };
-
-  const resetView = () => {
-    if (molecule) {
-      renderStructure(molecule);
-    }
   };
 
   if (!rdkitReady) {
@@ -583,7 +570,9 @@ const RDKitMolecularVisualization = ({
         <div className="flex items-center">
           <Zap className="w-5 h-5 mr-2 text-blue-500" />
           <h3 className={`text-lg font-semibold ${getTextClasses(isDarkMode, 'primary')}`}>
-            {title} <span className="text-sm font-normal text-blue-500">(RDKit)</span>
+            {title} <span className={`text-sm font-normal ${usingRealRDKit ? 'text-green-500' : 'text-amber-500'}`}>
+              ({usingRealRDKit ? 'RDKit' : 'Fallback'})
+            </span>
           </h3>
         </div>
         
@@ -741,17 +730,7 @@ const RDKitMolecularVisualization = ({
                   <div className="flex items-center justify-center w-full h-full text-gray-500">
                     <div className="text-center">
                       <Eye className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                      <p>Generate molecule to view structure</p>
-                      <button
-                        onClick={() => generateMolecule()}
-                        className="mt-2 px-3 py-1 bg-blue-500 text-white rounded text-sm hover:bg-blue-600"
-                      >
-                        Debug: Generate Now
-                      </button>
-                      <div className="mt-2 text-xs">
-                        <div>SMILES: {smiles || 'None'}</div>
-                        <div>RDKit Ready: {rdkitReady ? 'Yes' : 'No'}</div>
-                      </div>
+                      <p>Generating structure…</p>
                     </div>
                   </div>
                 )}
