@@ -1,305 +1,155 @@
-import React, { useState } from 'react';
-import { Beaker, Eye, RotateCcw, Info } from 'lucide-react';
-import { useDrugForge } from '../context/DrugForgeContext';
-import { getTextClasses, getBackgroundClasses } from '../utils/themeUtils';
-import RDKitMolecularVisualization from './RDKitMolecularVisualization';
+import React, { useState, useCallback } from 'react';
+import { Beaker, Search, RotateCcw, Atom, FlaskConical } from 'lucide-react';
+import Molecule3DViewer from './Molecule3DViewer';
+
+const EXAMPLES = [
+  { name: 'Aspirin', smiles: 'CC(=O)OC1=CC=CC=C1C(=O)O' },
+  { name: 'Caffeine', smiles: 'CN1C=NC2=C1C(=O)N(C(=O)N2C)C' },
+  { name: 'Ibuprofen', smiles: 'CC(C)CC1=CC=C(C=C1)C(C)C(=O)O' },
+  { name: 'Paracetamol', smiles: 'CC(=O)NC1=CC=C(C=C1)O' },
+  { name: 'Penicillin G', smiles: 'CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C' },
+  { name: 'Morphine', smiles: 'CN1CC[C@]23C4=C5C(=C(C=C4)O)O[C@H]2[C@@H](C=C3)[C@H]1C5' },
+  { name: 'Warfarin', smiles: 'CC(=O)CC(C1=CC=CC=C1)C2=C(C3=CC=CC=C3OC2=O)O' },
+  { name: 'Metformin', smiles: 'CN(C)C(=N)NC(=N)N' },
+];
 
 /**
- * Interactive Molecular Visualization Page
- * Provides input interface for SMILES strings and displays molecular structures
+ * Molecule Studio – full-page immersive 3D molecular visualization.
+ *
+ * Uses the upgraded Molecule3DViewer with glass toolbar, view-mode
+ * toggles, VDW surface overlay, atom hover labels, and screenshot.
  */
 const MolecularVisualizationPage = () => {
-  const { isDarkMode } = useDrugForge();
-  const [smilesInput, setSmilesInput] = useState('');
-  const [currentSmiles, setCurrentSmiles] = useState('');
-  const [examples] = useState([
-    { name: 'Aspirin', smiles: 'CC(=O)OC1=CC=CC=C1C(=O)O', description: 'Common pain reliever' },
-    { name: 'Caffeine', smiles: 'CN1C=NC2=C1C(=O)N(C(=O)N2C)C', description: 'Stimulant compound' },
-    { name: 'Ibuprofen', smiles: 'CC(C)CC1=CC=C(C=C1)C(C)C(=O)O', description: 'Anti-inflammatory drug' },
-    { name: 'Paracetamol', smiles: 'CC(=O)NC1=CC=C(C=C1)O', description: 'Acetaminophen pain reliever' },
-    { name: 'Penicillin G', smiles: 'CC1([C@@H](N2[C@H](S1)[C@@H](C2=O)NC(=O)CC3=CC=CC=C3)C(=O)O)C', description: 'β-lactam antibiotic' },
-    { name: 'Morphine', smiles: 'CN1CC[C@]23C4=C5C(=C(C=C4)O)O[C@H]2[C@@H](C=C3)[C@H]1C5', description: 'Opioid analgesic' },
-    { name: 'Warfarin', smiles: 'CC(=O)CC(C1=CC=CC=C1)C2=C(C3=CC=CC=C3OC2=O)O', description: 'Anticoagulant medication' },
-    { name: 'Metformin', smiles: 'CN(C)C(=N)NC(=N)N', description: 'Type 2 diabetes medication' }
-  ]);
+  const [inputValue, setInputValue] = useState('');
+  const [currentSmiles, setCurrentSmiles] = useState(EXAMPLES[0].smiles);
+  const [currentName, setCurrentName] = useState(EXAMPLES[0].name);
 
-  const handleVisualize = () => {
-    if (smilesInput.trim()) {
-      setCurrentSmiles(smilesInput.trim());
-    }
-  };
+  const handleSubmit = useCallback(
+    (e) => {
+      e?.preventDefault();
+      const trimmed = inputValue.trim();
+      if (trimmed) {
+        setCurrentSmiles(trimmed);
+        setCurrentName('Custom');
+      }
+    },
+    [inputValue],
+  );
 
-  const handleExampleClick = (smiles, name) => {
-    setSmilesInput(smiles);
-    setCurrentSmiles(smiles);
-  };
+  const handleExample = useCallback((ex) => {
+    setInputValue(ex.smiles);
+    setCurrentSmiles(ex.smiles);
+    setCurrentName(ex.name);
+  }, []);
 
-  const handleClear = () => {
-    setSmilesInput('');
+  const handleClear = useCallback(() => {
+    setInputValue('');
     setCurrentSmiles('');
-  };
-
-  const isValidSmiles = (smiles) => {
-    // Basic SMILES validation
-    if (!smiles) return false;
-    
-    // Check for basic chemical characters
-    const smilesPattern = /^[A-Za-z0-9@+\-\[\]()=#\\\/\.]+$/;
-    return smilesPattern.test(smiles) && smiles.length > 1;
-  };
+    setCurrentName('');
+  }, []);
 
   return (
-    <div className={`min-h-screen p-6 ${getBackgroundClasses(isDarkMode)}`}>
-      <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className={`text-3xl font-bold mb-2 flex items-center ${getTextClasses(isDarkMode, 'primary')}`}>
-            <Beaker className="w-8 h-8 mr-3 text-blue-500" />
-            Molecular Visualization Studio
-          </h1>
-          <p className={`text-lg ${getTextClasses(isDarkMode, 'secondary')}`}>
-            Visualize molecular structures using RDKit-powered chemical informatics
-          </p>
+    <div className="flex flex-col h-full min-h-[calc(100vh-4rem)] gap-4 p-4">
+      {/* ── Header bar ───────────────────────────────────────────── */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-xl bg-gradient-to-br from-cyan-500/20 to-violet-500/20 border border-white/10">
+            <Atom className="w-6 h-6 text-cyan-400" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-white">Molecule Studio</h1>
+            <p className="text-xs text-slate-400">
+              Interactive 3D molecular visualization
+            </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-          {/* Input Panel */}
-          <div className="lg:col-span-1">
-            <div className={`p-6 rounded-lg border ${
-              isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-            }`}>
-              <h2 className={`text-xl font-semibold mb-4 ${getTextClasses(isDarkMode, 'primary')}`}>
-                SMILES Input
-              </h2>
-
-              {/* SMILES Input Field */}
-              <div className="mb-4">
-                <label className={`block text-sm font-medium mb-2 ${getTextClasses(isDarkMode, 'primary')}`}>
-                  Enter SMILES String
-                </label>
-                <div className="space-y-2">
-                  <textarea
-                    value={smilesInput}
-                    onChange={(e) => setSmilesInput(e.target.value)}
-                    placeholder="Enter SMILES string (e.g., CC(=O)OC1=CC=CC=C1C(=O)O)"
-                    className={`w-full p-3 border rounded-lg resize-none ${
-                      isDarkMode ? 'bg-gray-700 border-gray-600 text-white' : 'bg-white border-gray-300'
-                    } ${
-                      smilesInput && !isValidSmiles(smilesInput) 
-                        ? 'border-red-500 bg-red-50 dark:bg-red-900/10' 
-                        : ''
-                    }`}
-                    rows={3}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        handleVisualize();
-                      }
-                    }}
-                  />
-                  
-                  {/* Validation Message */}
-                  {smilesInput && !isValidSmiles(smilesInput) && (
-                    <div className="flex items-center text-sm text-red-500">
-                      <Info className="w-4 h-4 mr-1" />
-                      Please enter a valid SMILES string
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex mb-6 space-x-2">
-                <button
-                  onClick={handleVisualize}
-                  disabled={!isValidSmiles(smilesInput)}
-                  className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-                    !isValidSmiles(smilesInput)
-                      ? 'bg-gray-400 cursor-not-allowed'
-                      : 'bg-blue-500 hover:bg-blue-600'
-                  } text-white`}
-                >
-                  <Eye className="w-4 h-4 mr-2" />
-                  Visualize
-                </button>
-                
-                <button
-                  onClick={handleClear}
-                  className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-                    isDarkMode ? 'bg-gray-700 hover:bg-gray-600' : 'bg-gray-200 hover:bg-gray-300'
-                  } ${getTextClasses(isDarkMode, 'primary')}`}
-                >
-                  <RotateCcw className="w-4 h-4 mr-2" />
-                  Clear
-                </button>
-              </div>
-
-              {/* Example Molecules */}
-              <div>
-                <h3 className={`text-lg font-semibold mb-3 ${getTextClasses(isDarkMode, 'primary')}`}>
-                  Example Molecules
-                </h3>
-                <div className="space-y-2 overflow-y-auto max-h-64">
-                  {examples.map((example, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleExampleClick(example.smiles, example.name)}
-                      className={`w-full text-left p-3 rounded-lg border transition-colors ${
-                        isDarkMode 
-                          ? 'border-gray-600 bg-gray-700 hover:bg-gray-650' 
-                          : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
-                      }`}
-                    >
-                      <div className={`font-medium ${getTextClasses(isDarkMode, 'primary')}`}>
-                        {example.name}
-                      </div>
-                      <div className={`text-sm ${getTextClasses(isDarkMode, 'secondary')}`}>
-                        {example.description}
-                      </div>
-                      <div className={`text-xs font-mono mt-1 ${getTextClasses(isDarkMode, 'muted')}`}>
-                        {example.smiles.length > 30 
-                          ? `${example.smiles.substring(0, 30)}...` 
-                          : example.smiles
-                        }
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Help Section */}
-              <div className={`mt-6 p-4 rounded-lg border ${
-                isDarkMode ? 'bg-blue-900/20 border-blue-600' : 'bg-blue-50 border-blue-200'
-              }`}>
-                <h4 className={`font-semibold mb-2 flex items-center ${getTextClasses(isDarkMode, 'primary')}`}>
-                  <Info className="w-4 h-4 mr-2 text-blue-500" />
-                  SMILES Help
-                </h4>
-                <div className={`text-sm space-y-1 ${getTextClasses(isDarkMode, 'secondary')}`}>
-                  <p>• SMILES (Simplified Molecular Input Line Entry System)</p>
-                  <p>• Use standard chemical notation (C, N, O, etc.)</p>
-                  <p>• Brackets [] for atoms with properties</p>
-                  <p>• Parentheses () for branching</p>
-                  <p>• Numbers for ring closures</p>
-                  <p>• = for double bonds, # for triple bonds</p>
-                </div>
-              </div>
-            </div>
+        {/* SMILES search */}
+        <form onSubmit={handleSubmit} className="flex gap-2 flex-1 max-w-xl">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+            <input
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Enter SMILES string…"
+              className="w-full pl-9 pr-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 font-mono"
+            />
           </div>
+          <button
+            type="submit"
+            className="px-4 py-2 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 text-sm font-medium hover:bg-cyan-500/30 transition-colors"
+          >
+            Visualize
+          </button>
+          <button
+            type="button"
+            onClick={handleClear}
+            className="p-2 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+            title="Clear"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+        </form>
+      </div>
 
-          {/* Visualization Panel */}
-          <div className="lg:col-span-2">
-            <div className={`p-6 rounded-lg border min-h-96 ${
-              isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-            }`}>
-              <h2 className={`text-xl font-semibold mb-4 ${getTextClasses(isDarkMode, 'primary')}`}>
-                Molecular Structure
-              </h2>
-
-              {currentSmiles ? (
-                <div className="space-y-4">
-                  {/* Current SMILES Display */}
-                  <div className={`p-3 rounded-lg border ${
-                    isDarkMode ? 'bg-gray-900 border-gray-600' : 'bg-gray-50 border-gray-200'
-                  }`}>
-                    <div className={`text-sm ${getTextClasses(isDarkMode, 'secondary')}`}>
-                      Current SMILES:
-                    </div>
-                    <div className={`font-mono text-sm ${getTextClasses(isDarkMode, 'primary')}`}>
-                      {currentSmiles}
-                    </div>
-                  </div>
-
-                  {/* RDKit Visualization Component */}
-                  <RDKitMolecularVisualization
-                    smiles={currentSmiles}
-                    title="Molecular Structure"
-                    showControls={true}
-                    showProperties={true}
-                    width={500}
-                    height={400}
-                  />
-
-
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <Beaker className={`h-16 w-16 mb-4 ${getTextClasses(isDarkMode, 'muted')}`} />
-                  <h3 className={`text-lg font-medium mb-2 ${getTextClasses(isDarkMode, 'primary')}`}>
-                    Ready to Visualize
-                  </h3>
-                  <p className={`text-center ${getTextClasses(isDarkMode, 'secondary')}`}>
-                    Enter a SMILES string or select an example molecule to see its 2D/3D structure,
-                    <br />
-                    molecular properties, and chemical descriptors
-                  </p>
-                  
-                  {/* Quick Start Examples */}
-                  <div className="grid grid-cols-2 gap-3 mt-6">
-                    <button
-                      onClick={() => handleExampleClick('CC(=O)OC1=CC=CC=C1C(=O)O', 'Aspirin')}
-                      className="flex items-center px-4 py-2 text-white transition-colors bg-blue-500 rounded-lg hover:bg-blue-600"
-                    >
-                      <Eye className="w-4 h-4 mr-2" />
-                      Try Aspirin
-                    </button>
-                    <button
-                      onClick={() => handleExampleClick('CN1C=NC2=C1C(=O)N(C(=O)N2C)C', 'Caffeine')}
-                      className="flex items-center px-4 py-2 text-white transition-colors bg-green-500 rounded-lg hover:bg-green-600"
-                    >
-                      <Eye className="w-4 h-4 mr-2" />
-                      Try Caffeine
-                    </button>
-                  </div>
-                </div>
-              )}
+      {/* ── Main content ─────────────────────────────────────────── */}
+      <div className="flex flex-col lg:flex-row gap-4 flex-1 min-h-0">
+        {/* Left sidebar – example molecules */}
+        <div className="lg:w-56 shrink-0">
+          <div className="rounded-xl bg-white/5 border border-white/10 p-3">
+            <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <FlaskConical className="w-3.5 h-3.5" />
+              Examples
+            </h2>
+            <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:overflow-x-visible pb-1 lg:pb-0">
+              {EXAMPLES.map((ex) => (
+                <button
+                  key={ex.name}
+                  onClick={() => handleExample(ex)}
+                  className={`text-left px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-all ${
+                    currentSmiles === ex.smiles
+                      ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/30'
+                      : 'text-slate-300 hover:bg-white/5 border border-transparent'
+                  }`}
+                >
+                  {ex.name}
+                </button>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Additional Information */}
-        <div className={`mt-8 p-6 rounded-lg border ${
-          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
-        }`}>
-          <h3 className={`text-lg font-semibold mb-4 ${getTextClasses(isDarkMode, 'primary')}`}>
-            Features
-          </h3>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-            <div>
-              <h4 className={`font-semibold mb-2 ${getTextClasses(isDarkMode, 'primary')}`}>
-                Molecular Rendering
-              </h4>
-              <ul className={`text-sm space-y-1 ${getTextClasses(isDarkMode, 'secondary')}`}>
-                <li>• High-quality 2D structure visualization</li>
-                <li>• Customizable atom and bond styling</li>
-                <li>• Stereo annotation support</li>
-                <li>• SVG-based scalable graphics</li>
-              </ul>
+        {/* 3D Viewer – fills remaining space */}
+        <div className="flex-1 flex flex-col min-h-0">
+          {/* current molecule label */}
+          {currentName && currentSmiles && (
+            <div className="mb-2 flex items-center gap-2">
+              <span className="text-sm font-medium text-white">
+                {currentName}
+              </span>
+              <span className="text-xs font-mono text-slate-500 truncate max-w-xs">
+                {currentSmiles}
+              </span>
             </div>
-            
-            <div>
-              <h4 className={`font-semibold mb-2 ${getTextClasses(isDarkMode, 'primary')}`}>
-                Chemical Properties
-              </h4>
-              <ul className={`text-sm space-y-1 ${getTextClasses(isDarkMode, 'secondary')}`}>
-                <li>• Molecular weight calculation</li>
-                <li>• LogP and TPSA values</li>
-                <li>• H-bond donors/acceptors</li>
-                <li>• Drug-likeness assessment</li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className={`font-semibold mb-2 ${getTextClasses(isDarkMode, 'primary')}`}>
-                Advanced Features
-              </h4>
-              <ul className={`text-sm space-y-1 ${getTextClasses(isDarkMode, 'secondary')}`}>
-                <li>• Morgan fingerprint generation</li>
-                <li>• RDKit descriptor calculations</li>
-                <li>• Structure export capabilities</li>
-                <li>• Interactive controls and settings</li>
-              </ul>
-            </div>
+          )}
+
+          <div className="flex-1 rounded-xl border border-white/10 overflow-hidden bg-[#0a0f1a] min-h-[400px]">
+            {currentSmiles ? (
+              <Molecule3DViewer
+                smiles={currentSmiles}
+                width="100%"
+                height="100%"
+                showControls={true}
+                spin={true}
+              />
+            ) : (
+              <div className="h-full flex flex-col items-center justify-center text-slate-500 gap-3">
+                <Beaker className="w-12 h-12 opacity-40" />
+                <p className="text-sm">
+                  Enter a SMILES string or pick an example to begin
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </div>

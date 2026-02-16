@@ -476,6 +476,7 @@ const LabBench = () => {
                         width={350}
                         height={300}
                         spin={true}
+                        showControls={false}
                       />
                     ) : (
                       <RDKitMolecularVisualization
