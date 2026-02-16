@@ -109,6 +109,7 @@ ALLOWED_ORIGINS: list[str] = [
     "http://127.0.0.1:3001",
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "https://drug-forge.vercel.app",
     FRONTEND_URL,
 ]
 
