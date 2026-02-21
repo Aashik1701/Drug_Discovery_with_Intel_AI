@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useReducer, useEffect } from 'react';
+import React, { createContext, useContext, useReducer, useEffect, useState } from 'react';
 
 // Initial state
 const initialState = {
@@ -169,6 +169,10 @@ export const DrugForgeProvider = ({ children }) => {
     }
   }, []);
 
+  // Sidebar collapse state
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const toggleSidebar = () => setIsSidebarCollapsed(prev => !prev);
+
   // Computed convenience values
   const isDarkMode = state.theme === 'dark';
   const toggleTheme = () => dispatch({
@@ -178,6 +182,8 @@ export const DrugForgeProvider = ({ children }) => {
 
   // Context value
   const value = {
+    isSidebarCollapsed,
+    toggleSidebar,
     state,
     dispatch,
     isDarkMode,
