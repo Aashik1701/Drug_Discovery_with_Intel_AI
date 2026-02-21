@@ -79,6 +79,14 @@ export default {
         'fade-in': 'fade-in 0.3s ease-in',
         'shimmer': 'shimmer 2s infinite',
         'blob': 'blob 7s infinite',
+        // Landing page premium animations
+        'aurora': 'aurora 12s ease infinite',
+        'aurora-orb-1': 'aurora-orb-1 8s ease-in-out infinite',
+        'aurora-orb-2': 'aurora-orb-2 10s ease-in-out infinite',
+        'aurora-orb-3': 'aurora-orb-3 12s ease-in-out infinite',
+        'shimmer-sweep': 'shimmer-sweep 2.5s linear infinite',
+        'border-beam-spin': 'border-beam-spin var(--border-beam-duration, 12s) linear infinite',
+        'meteor': 'meteor 8s linear infinite',
       },
       keyframes: {
         float: {
@@ -110,6 +118,39 @@ export default {
           '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
           '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
           '100%': { transform: 'translate(0px, 0px) scale(1)' },
+        },
+        // Premium landing page keyframes
+        aurora: {
+          '0%': { backgroundPosition: '50% 50%, 50% 50%' },
+          '50%': { backgroundPosition: '350% 50%, 350% 50%' },
+          '100%': { backgroundPosition: '50% 50%, 50% 50%' },
+        },
+        'aurora-orb-1': {
+          '0%, 100%': { transform: 'translate(0, 0) scale(1)', opacity: '0.3' },
+          '33%': { transform: 'translate(60px, -40px) scale(1.2)', opacity: '0.5' },
+          '66%': { transform: 'translate(-30px, 30px) scale(0.9)', opacity: '0.2' },
+        },
+        'aurora-orb-2': {
+          '0%, 100%': { transform: 'translate(0, 0) scale(1)', opacity: '0.25' },
+          '50%': { transform: 'translate(-50px, 50px) scale(1.15)', opacity: '0.4' },
+        },
+        'aurora-orb-3': {
+          '0%, 100%': { transform: 'translate(0, 0) scale(1)', opacity: '0.2' },
+          '40%': { transform: 'translate(40px, 20px) scale(1.1)', opacity: '0.35' },
+          '70%': { transform: 'translate(-20px, -30px) scale(0.95)', opacity: '0.15' },
+        },
+        'shimmer-sweep': {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
+        },
+        'border-beam-spin': {
+          '0%': { '--border-beam-angle': '0' },
+          '100%': { '--border-beam-angle': '360' },
+        },
+        meteor: {
+          '0%': { transform: 'rotate(215deg) translateX(0)', opacity: '1' },
+          '70%': { opacity: '1' },
+          '100%': { transform: 'rotate(215deg) translateX(-500px)', opacity: '0' },
         },
       },
     },

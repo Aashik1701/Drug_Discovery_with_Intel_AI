@@ -11,6 +11,7 @@ import GlassCard, { GlassPanel, GlassButton, GlassBadge } from './ui/GlassCard';
 import { ShimmerBlock, ShimmerText } from './ui/ShimmerLoader';
 import RDKitMolecularVisualization from './RDKitMolecularVisualization';
 import Molecule3DViewer from './Molecule3DViewer';
+import { useDrugForge } from '../context/DrugForgeContext';
 
 // ────────────────────────────────────────────────────────────
 //  MODEL DEFINITIONS
@@ -254,6 +255,7 @@ const LabBench = () => {
   const inputRef = useRef(null);
 
   const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5001';
+  const { setActiveContext } = useDrugForge();
 
   // Auto-analyze if smiles came from URL params
   useEffect(() => {
@@ -265,6 +267,18 @@ const LabBench = () => {
       return () => clearTimeout(timer);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ─── Tell the AI Chat what we're analyzing ──────────────
+  useEffect(() => {
+    if (smiles && Object.keys(results).length > 0) {
+      setActiveContext({
+        smiles,
+        results,
+        activeTab,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  }, [smiles, results, activeTab, setActiveContext]);
 
   const currentModels = activeTab === 'admet' ? ADMET_MODELS : TARGET_MODELS;
 

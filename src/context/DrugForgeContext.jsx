@@ -173,6 +173,9 @@ export const DrugForgeProvider = ({ children }) => {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const toggleSidebar = () => setIsSidebarCollapsed(prev => !prev);
 
+  // AI Chat Context — what the researcher is currently analyzing
+  const [activeContext, setActiveContext] = useState(null);
+
   // Computed convenience values
   const isDarkMode = state.theme === 'dark';
   const toggleTheme = () => dispatch({
@@ -184,6 +187,8 @@ export const DrugForgeProvider = ({ children }) => {
   const value = {
     isSidebarCollapsed,
     toggleSidebar,
+    activeContext,
+    setActiveContext,
     state,
     dispatch,
     isDarkMode,

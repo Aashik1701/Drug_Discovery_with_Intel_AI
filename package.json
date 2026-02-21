@@ -14,6 +14,7 @@
     "3dmol": "^2.5.4",
     "axios": "^1.7.7",
     "body-parser": "^1.20.3",
+    "clsx": "^2.1.1",
     "dotenv": "^16.5.0",
     "framer-motion": "^11.0.3",
     "lucide-react": "^0.330.0",
@@ -24,6 +25,7 @@
     "react-markdown": "^9.0.1",
     "react-router-dom": "^6.21.3",
     "styled-components": "^6.1.8",
+    "tailwind-merge": "^3.5.0",
     "tough-cookie": "^5.0.0",
     "web-vitals": "^3.5.1"
   },

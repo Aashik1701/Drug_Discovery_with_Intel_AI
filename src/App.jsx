@@ -14,8 +14,8 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import GlassHeader from './components/GlassHeader.jsx';
 import GlassLayout from './components/layout/GlassLayout.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
-import Chatbot from './components/Chatbot.jsx';
 import Notifications from './components/Notifications.jsx';
+import ChatWidget from './components/ChatWidget.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import { ThemeProvider } from './components/ThemeProvider.jsx';
 import GlassBackground from './components/layout/GlassBackground.jsx';
@@ -55,6 +55,7 @@ const AppContent = () => {
       {/* Public routes get the floating GlassHeader; app routes get the Sidebar via GlassLayout */}
       {!isAppRoute && <GlassHeader />}
       <Notifications />
+      <ChatWidget />
 
       <Suspense fallback={<LoadingFallback />}>
         <div className={!isAppRoute ? 'pt-16 min-h-screen text-gray-900 dark:text-gray-100' : 'text-gray-900 dark:text-gray-100'}>
@@ -107,7 +108,7 @@ const AppContent = () => {
         </div>
       </Suspense>
 
-      <Chatbot />
+      <ChatWidget />
     </>
   );
 };
