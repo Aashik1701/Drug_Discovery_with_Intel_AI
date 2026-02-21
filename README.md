@@ -475,21 +475,21 @@ Where does a drug actually "dock" onto a protein? Let's visualize it.
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    YOUR BROWSER                              │
-│  ┌────────────────────────────────────────────────────┐    │
+│                    YOUR BROWSER                             │
+│  ┌─────────────────────────────────────────────────-───┐    │
 │  │  React App (JavaScript)                             │    │
 │  │  - Type SMILES → Send to API                        │    │
 │  │  - Receive predictions → Display results            │    │
 │  │  - Draw 2D structure (RDKit.js)                     │    │
 │  │  - Render 3D model (3Dmol.js)                       │    │
-│  └────────────────────────────────────────────────────┘    │
+│  └─────────────────────────────────────────────────-───┘    │
 └────────────────────────┬────────────────────────────────────┘
                          │ HTTPS Request (JSON)
                          │ POST {"smiles": "CCO"}
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
-│                   API SERVER (Cloud)                         │
-│  ┌────────────────────────────────────────────────────┐    │
+│                   API SERVER (Cloud)                        │
+│  ┌─────────────────────────────────────────────────-───┐    │
 │  │  FastAPI (Python)                                   │    │
 │  │  1. Parse SMILES → Validate                         │    │
 │  │  2. Extract features (RDKit) → 200+ numbers         │    │
@@ -498,7 +498,7 @@ Where does a drug actually "dock" onto a protein? Let's visualize it.
 │  │  5. Compute charges → Gasteiger values              │    │
 │  │  6. Detect pharmacophores → XYZ positions           │    │
 │  │  7. Return JSON → Back to browser                   │    │
-│  └────────────────────────────────────────────────────┘    │
+│  └──────────────────────────────────────────────────-──┘    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
