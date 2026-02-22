@@ -7,7 +7,7 @@ from typing import Literal, Optional
 from pydantic import BaseModel, Field, field_validator
 
 
-DockTaskStatus = Literal["queued", "processing", "completed", "failed"]
+DockTaskStatus = Literal["queued", "processing", "completed", "failed", "cancelled"]
 
 
 class DockStartRequest(BaseModel):
@@ -26,6 +26,12 @@ class DockStartRequest(BaseModel):
         max_length=100,
         description="Target identifier (e.g. 'cox2', 'ace2')",
         json_schema_extra={"examples": ["cox2"]},
+    )
+    exhaustiveness: Optional[int] = Field(
+        None,
+        ge=1,
+        le=64,
+        description="Vina exhaustiveness parameter (1-64). Higher = more thorough but slower.",
     )
 
     @field_validator("smiles")

@@ -73,10 +73,14 @@ export const healthService = {
 };
 
 export const dockingService = {
-  startDocking: (smiles, target) =>
-    apiClient.post('/api/dock/start', { smiles, target }, { timeout: 120000 }),
+  startDocking: (smiles, target, exhaustiveness) =>
+    apiClient.post('/api/dock/start', { smiles, target, exhaustiveness }, { timeout: 120000 }),
   getDockingStatus: (taskId) =>
     apiClient.get(`/api/dock/status/${taskId}`, { timeout: 15000 }),
+  cancelDocking: (taskId) =>
+    apiClient.post(`/api/dock/cancel/${taskId}`, {}, { timeout: 10000 }),
+  getHistory: () =>
+    apiClient.get('/api/dock/history', { timeout: 15000 }),
   getReceptor: (target) =>
     apiClient.get(`/api/dock/receptor/${target}`, { timeout: 60000 }),
 };
