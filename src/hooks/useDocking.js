@@ -9,6 +9,7 @@ export const useDocking = () => {
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCancelling, setIsCancelling] = useState(false);
   const pollTimerRef = useRef(null);
 
   const stopPolling = useCallback(() => {
@@ -25,7 +26,7 @@ export const useDocking = () => {
     setResult(data);
     setStatus(data.status || 'processing');
 
-    if (data.status === 'completed' || data.status === 'failed') {
+    if (data.status === 'completed' || data.status === 'failed' || data.status === 'cancelled') {
       stopPolling();
       if (data.status === 'failed') {
         setError(data.error || 'Docking failed');
@@ -35,15 +36,16 @@ export const useDocking = () => {
     return data;
   }, [stopPolling]);
 
-  const startDocking = useCallback(async ({ smiles, target }) => {
+  const startDocking = useCallback(async ({ smiles, target, exhaustiveness }) => {
     stopPolling();
     setError('');
     setResult(null);
     setStatus('queued');
     setIsSubmitting(true);
+    setIsCancelling(false);
 
     try {
-      const startResponse = await dockingService.startDocking(smiles, target);
+      const startResponse = await dockingService.startDocking(smiles, target, exhaustiveness);
       const data = startResponse.data;
 
       setTaskId(data.task_id);
@@ -68,6 +70,34 @@ export const useDocking = () => {
     }
   }, [fetchStatus, stopPolling]);
 
+  const cancelDocking = useCallback(async () => {
+    if (!taskId) return;
+    setIsCancelling(true);
+    stopPolling();
+
+    try {
+      await dockingService.cancelDocking(taskId);
+      setStatus('cancelled');
+      setError('Cancelled by user');
+    } catch (err) {
+      // Even if cancel API fails, stop polling
+      const message = err?.response?.data?.detail || err?.message || 'Cancel failed';
+      setError(message);
+    } finally {
+      setIsCancelling(false);
+    }
+  }, [taskId, stopPolling]);
+
+  const reset = useCallback(() => {
+    stopPolling();
+    setTaskId('');
+    setStatus('idle');
+    setResult(null);
+    setError('');
+    setIsSubmitting(false);
+    setIsCancelling(false);
+  }, [stopPolling]);
+
   useEffect(() => () => stopPolling(), [stopPolling]);
 
   return {
@@ -76,8 +106,11 @@ export const useDocking = () => {
     result,
     error,
     isSubmitting,
+    isCancelling,
     isProcessing: status === 'queued' || status === 'processing',
     startDocking,
+    cancelDocking,
+    reset,
     stopPolling,
   };
 };
