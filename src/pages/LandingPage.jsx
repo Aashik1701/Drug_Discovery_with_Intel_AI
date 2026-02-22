@@ -264,29 +264,7 @@ const HeroSection = () => {
       </div>
 
       {/* Scroll indicator — animated mouse */}
-      <motion.div
-        className="absolute z-10 -translate-x-1/2 bottom-8 left-1/2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 0.6 }}
-      >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-          className="flex flex-col items-center gap-2"
-        >
-          <div className="w-6 h-10 rounded-full border-2 border-gray-400/30 dark:border-white/20 flex items-start justify-center p-1.5">
-            <motion.div
-              className="w-1 h-2 rounded-full bg-cyan-500/70"
-              animate={{ y: [0, 12, 0], opacity: [1, 0.3, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            />
-          </div>
-          <span className="text-[9px] uppercase tracking-[3px] text-gray-400 dark:text-gray-500">
-            scroll
-          </span>
-        </motion.div>
-      </motion.div>
+      
     </AuroraBackground>
   );
 };

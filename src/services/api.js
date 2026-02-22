@@ -72,9 +72,19 @@ export const healthService = {
   listModels: () => apiClient.get('/models'),
 };
 
+export const dockingService = {
+  startDocking: (smiles, target) =>
+    apiClient.post('/api/dock/start', { smiles, target }, { timeout: 120000 }),
+  getDockingStatus: (taskId) =>
+    apiClient.get(`/api/dock/status/${taskId}`, { timeout: 15000 }),
+  getReceptor: (target) =>
+    apiClient.get(`/api/dock/receptor/${target}`, { timeout: 60000 }),
+};
+
 export { apiClient };
 
 export default {
   predictionService,
   healthService,
+  dockingService,
 };
