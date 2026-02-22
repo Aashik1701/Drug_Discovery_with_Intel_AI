@@ -5,6 +5,7 @@ import {
   FlaskConical,
   Layers,
   Dna,
+  Target,
   Settings,
   LogOut,
   ChevronLeft,
@@ -16,6 +17,7 @@ import { useDrugForge } from '../../context/DrugForgeContext';
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', path: '/app' },
   { icon: FlaskConical, label: 'Lab Bench', path: '/app/analyze' },
+  { icon: Target, label: 'Docking Studio', path: '/app/docking' },
   { icon: Dna, label: 'Molecule 3D', path: '/app/visualization' },
   { icon: Layers, label: 'Batch Process', path: '/app/batch' },
   { icon: Settings, label: 'Settings', path: '/app/settings' },

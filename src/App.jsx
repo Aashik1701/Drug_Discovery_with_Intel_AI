@@ -36,6 +36,7 @@ const AppDashboard = lazy(() => import('./components/AppDashboard.jsx'));
 const LabBench = lazy(() => import('./components/LabBench.jsx'));
 const BatchProcessor = lazy(() => import('./components/BatchProcessor2.jsx'));
 const UserSettings = lazy(() => import('./components/UserSettings.jsx'));
+const DockingStudio = lazy(() => import('./components/DockingStudio.jsx'));
 const NotFound = lazy(() => import('./pages/NotFound.jsx'));
 
 // Auth pages (still needed)
@@ -58,7 +59,7 @@ const AppContent = () => {
       <ChatWidget />
 
       <Suspense fallback={<LoadingFallback />}>
-        <div className={!isAppRoute ? 'pt-16 min-h-screen text-gray-900 dark:text-gray-100' : 'text-gray-900 dark:text-gray-100'}>
+        <div className={!isAppRoute ? 'pt-18 min-h-screen text-gray-900 dark:text-gray-100' : 'text-gray-900 dark:text-gray-100'}>
           <Routes>
             {/* ═══ 1. Public Landing Page ═══ */}
             <Route path="/" element={<LandingPage />} />
@@ -74,6 +75,9 @@ const AppContent = () => {
 
             {/* ═══ 5. User Settings ═══ */}
             <Route path="/app/settings" element={<ProtectedRoute><GlassLayout><UserSettings /></GlassLayout></ProtectedRoute>} />
+
+            {/* Docking Studio */}
+            <Route path="/app/docking" element={<ProtectedRoute><GlassLayout><DockingStudio /></GlassLayout></ProtectedRoute>} />
 
             {/* Auth */}
             <Route path="/register" element={<RegisterPage />} />
@@ -101,6 +105,7 @@ const AppContent = () => {
             <Route path="/pricing" element={<Navigate to="/#pricing" replace />} />
             <Route path="/contact" element={<Navigate to="/" replace />} />
             <Route path="/profile" element={<Navigate to="/app/settings" replace />} />
+            <Route path="/docking-studio" element={<Navigate to="/app/docking" replace />} />
 
             {/* Not Found */}
             <Route path="*" element={<NotFound />} />

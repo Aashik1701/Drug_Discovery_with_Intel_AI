@@ -133,6 +133,7 @@ from routers import cox2, hepg2, ace2, half_life
 from routers import batch as batch_router
 from routers import utils as utils_router
 from routers import chat
+from routers import dock
 
 app.include_router(solubility.router, prefix="/predict", tags=["Predictions"])
 app.include_router(bbbp.router, prefix="/predict", tags=["Predictions"])
@@ -146,6 +147,7 @@ app.include_router(half_life.router, prefix="/predict", tags=["Predictions"])
 app.include_router(batch_router.router, prefix="/predict", tags=["Batch"])
 app.include_router(utils_router.router, prefix="/utils", tags=["Utilities"])
 app.include_router(chat.router, prefix="/api/chat", tags=["AI Chat"])
+app.include_router(dock.router, prefix="/api/dock", tags=["Docking"])
 
 
 # ============================================================================
