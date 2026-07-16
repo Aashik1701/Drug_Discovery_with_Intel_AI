@@ -6,6 +6,7 @@ Endpoint: POST /predict/solubility
 
 import time
 import logging
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException
 
@@ -19,7 +20,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 # Reference to the global model loader (injected from main.py via app state)
-_loader: ModelLoader | None = None
+_loader: Optional[ModelLoader] = None
 
 
 def _get_loader() -> ModelLoader:

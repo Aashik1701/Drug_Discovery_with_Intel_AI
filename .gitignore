@@ -1,43 +1,125 @@
-# Logs
-logs
-*.log
+# ============================================================
+# macOS
+# ============================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# ============================================================
+# Frontend — Node / Vite
+# ============================================================
+node_modules/
+build/
+dist/
+dist-ssr/
+.vite/
+*.local
+
+# Generated Tailwind CSS output (rebuilt by `npm run dev`)
+src/output.css
+
+# npm/yarn debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# ============================================================
+# Environment & Secrets — NEVER commit real keys
+# ============================================================
+.env
+.env.*
+!.env.example
 
-# Editor directories and files
+# ============================================================
+# Python — Backend & ML notebooks
+# ============================================================
+
+# Virtual environments (includes the misnamed backend/# and backend/Create dirs)
+venv/
+.venv/
+env/
+backend/venv/
+backend/#/
+backend/Create/
+backendML/venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+
+# Distribution / packaging
+*.egg-info/
+*.egg
+.eggs/
+
+# Type checking & test caches
+.mypy_cache/
+.pytest_cache/
+.benchmarks/
+.ruff_cache/
+.hypothesis/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+coverage.xml
+*.cover
+
+# ============================================================
+# ML Models — large binaries (500 MB+ total), use cloud storage / DVC
+# ============================================================
+*.pkl
+*.h5
+*.hdf5
+*.pt
+*.pth
+*.onnx
+*.joblib
+
+# ============================================================
+# Jupyter — ignore only auto-save checkpoints, keep .ipynb
+# ============================================================
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# ============================================================
+# IDEs & Editors
+# ============================================================
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-.vercel
+*.swp
 
-# Environment variables and secrets - NEVER commit real keys
-.env*
-!.env.example
-env/
+# VS Code extension installers
+*.vsix
 
-# Dependency directories
-# Uncomment if you have a `package-lock.json` file
-# package-lock.json
-.venv
-__pycache__/
-*.pyc
-.pytest_cache/
-.mypy_cache/
-backendML/venv
-backend/venv
-/backendML/__pycache__/
-build/
+# ============================================================
+# Deployment
+# ============================================================
+.vercel/
+
+# ============================================================
+# Logs & temp files
+# ============================================================
+*.log
+logs/
+
+# ============================================================
+# Project-specific scratch / generated files
+# ============================================================
+# Auto-generated directory listing
+structure.txt
